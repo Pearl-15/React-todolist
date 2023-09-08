@@ -1,20 +1,22 @@
 import React from 'react';
-// import notes from '../notes';
+
 
 class Note extends React.Component{
+
+    constructor(props){
+        super(props);
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick = ()=>{
+        this.props.onDelete(this.props.id);
+    }
     render(){
         return(
-        <div>
-            {/* {notes.map((note)=>{
-                return(
-                    <div key={note.key}>
-                        <h1>{note.title}</h1>
-                        <p>{note.content}</p>
-                    </div>
-                )
-            })} */}
-
-            <h1>Note</h1>
+        <div>                 
+            <h1>{this.props.title}</h1>
+            <p>{this.props.content}</p>  
+            <button onClick={this.handleClick}>Delete</button>                        
         </div>)
     }
 }

@@ -6,7 +6,7 @@ class CreateNote extends React.Component{
         super(props);
         this.state={
             newNoteTitle: "",
-            newNoteContent:""
+            newNoteContent: ""
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleTitleChange = this.handleTitleChange.bind(this);
@@ -15,7 +15,11 @@ class CreateNote extends React.Component{
 
     handleSubmit = (e)=>{
         e.preventDefault();
-        console.log("Add New Note to List");
+        this.props.onAdd(this.state);
+        this.setState({
+            newNoteTitle: "",
+            newNoteContent: ""
+        })
     }
 
     handleTitleChange = (e) =>{
@@ -37,12 +41,14 @@ class CreateNote extends React.Component{
             <form onSubmit={this.handleSubmit}>
             <h1> Add Note </h1>
             <input 
+            name="newNoteTitle"
             type="text" 
             placeholder='Title...' 
             value={this.state.newNoteTitle}
             onChange={this.handleTitleChange}
             />
             <input 
+            name="newNoteContent"
             type="text" 
             placeholder='Content...' 
             value={this.state.newNoteContent}
