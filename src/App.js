@@ -2,7 +2,7 @@ import './App.css';
 import React from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import ManageNote from './components/ManageNote';
+import NoteTable from './components/NoteTable';
 
 class App extends React.Component{
 
@@ -11,7 +11,7 @@ class App extends React.Component{
     return (
       <div className="App">
         <Header />
-        <ManageNote />
+        <NoteTable />
         <Footer />
       </div>
     );}

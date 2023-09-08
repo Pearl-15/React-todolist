@@ -1,8 +1,8 @@
 import React from 'react';
-import CreateNote from './CreateNote';
-import Note from './Note';
+import CreateNote from './NoteForm';
+import Note from './NoteItem';
 
-class ManageNote extends React.Component{
+class NoteTable extends React.Component{
 
     constructor(props){
         super(props);
@@ -48,4 +48,4 @@ class ManageNote extends React.Component{
     }
 }
 
-export default ManageNote;
+export default NoteTable;

@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-class Note extends React.Component{
+class NoteItem extends React.Component{
 
     constructor(props){
         super(props);
@@ -21,4 +21,4 @@ class Note extends React.Component{
     }
 }
 
-export default Note;
+export default NoteItem;
