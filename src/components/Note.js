@@ -1,18 +1,20 @@
 import React from 'react';
-import notes from '../notes';
+// import notes from '../notes';
 
 class Note extends React.Component{
     render(){
         return(
         <div>
-            {notes.map((note)=>{
+            {/* {notes.map((note)=>{
                 return(
                     <div key={note.key}>
                         <h1>{note.title}</h1>
                         <p>{note.content}</p>
                     </div>
                 )
-            })}
+            })} */}
+
+            <h1>Note</h1>
         </div>)
     }
 }

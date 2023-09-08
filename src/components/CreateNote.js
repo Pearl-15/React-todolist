@@ -1,6 +1,6 @@
 import React from 'react';
 
-class AddNote extends React.Component{
+class CreateNote extends React.Component{
 
     constructor(props){
         super(props);
@@ -54,4 +54,4 @@ class AddNote extends React.Component{
     }
 }
 
-export default AddNote;
+export default CreateNote;
