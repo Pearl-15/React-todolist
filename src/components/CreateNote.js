@@ -39,7 +39,7 @@ class CreateNote extends React.Component{
         return(
         <div>
             <form onSubmit={this.handleSubmit}>
-            <h1> Add Note </h1>
+            <h1> Create To Do </h1>
             <input 
             name="newNoteTitle"
             type="text" 
