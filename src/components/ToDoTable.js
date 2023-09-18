@@ -12,97 +12,93 @@ class ToDoTable extends React.Component{
         }
     }
 
-    addToDo = (newToDo)=>{
-        fetch('http://localhost:3000/todoTable', {
-        method: 'POST',
-        headers: {
-            'Content-type': 'application/json',
-        },
-        body: JSON.stringify(newToDo),
-    })
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+    addToDo = async(newToDo)=>{
+        try{
+            const response = await fetch('http://localhost:3000/todoTable', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify(newToDo),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const responseData = await response.json()
+
+            if (responseData && responseData.title && responseData.content) {
+                console.log('ToDo added successfully:', responseData);
+                // Update the state with the new data after successful POST
+                this.setState((prevState) => ({
+                    todoTable: [...prevState.todoTable, responseData], // Use the response data
+                }));
+            } else {
+                console.log('Unexpected response:', responseData);
+            }
+
+
+        }catch(error){
+            console.log('Error : ' , error)
+
         }
-        return response.json(); // Parse the response as JSON
-    })
-    .then((responseData) => {
-        if (responseData && responseData.title && responseData.content) {
-            console.log('ToDo added successfully:', responseData);
-            // Update the state with the new data after successful POST
-            this.setState((prevState) => ({
-                todoTable: [...prevState.todoTable, responseData], // Use the response data
-            }));
-        } else {
-            console.log('Unexpected response:', responseData);
-        }
-    })
-    .catch((error) => {
-        console.log('Error:', error);
-    });
 
     }
 
-    onDelete = (todoItemId)=>{
-   
-        fetch(`http://localhost:3000/todoTable/${todoItemId}`, {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          })
-            .then((response) => {
+    onDelete = async(todoItemId)=>{
+
+        try{
+
+            const response = await fetch(`http://localhost:3000/todoTable/${todoItemId}`, {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              });
+
               if (!response.ok) {
                 throw new Error('Network response was not ok');
               }
-              return response.json();
-            })
-            .then((responseData) => {
-              // Handle the response from the server (e.g., show a success message)
-              if (responseData) {
-                console.log('ToDo deleted successfully:' , responseData);
-        
-                // Update the component state to reflect the deletion
 
+              const responseData = await response.json();
+
+              if(responseData){
+                console.log('ToDo deleted successfully');
                 this.setState({
                     todoTable: this.state.todoTable.filter((todoItem)=>{
                         return todoItem.id !== todoItemId ;
                     })
-                })
-              } else {
+                });
+
+              }else {
                 console.error('Unexpected response:', responseData);
               }
-            })
-            .catch((error) => {
-              // Handle errors (e.g., show an error message)
-              console.error('Error:', error);
-            });
 
-        
+
+        }catch(error){
+            console.log('Error: ', error);
+        }     
     }
 
-    onEdit = (todoItemId, updatedTitle, updatedContent)=>{
-        console.log("Want do edit :" ,todoItemId, " : ", updatedTitle, " : ", updatedContent)
-        fetch(`http://localhost:3000/todoTable/${todoItemId}`,{
-            method:'PATCH',
-            headers:{
-                'Content-Type':'application/json',
-            },
-            body: JSON.stringify({title: updatedTitle, content: updatedContent}),
-        })
-        .then((response)=>{
+    onEdit = async(todoItemId, updatedTitle, updatedContent)=>{
+
+        try{
+            const response = await fetch(`http://localhost:3000/todoTable/${todoItemId}`,{
+                method:'PATCH',
+                headers:{
+                    'Content-Type':'application/json',
+                },
+                body: JSON.stringify({title: updatedTitle, content: updatedContent}),
+            });
+
             if(!response.ok){
                 throw new Error('Network response was not ok');
             }
-            return response.json();
-        })
-        .then((responseData)=>{
 
-
+            const responseData = await response.json();
             if(responseData){
-                console.log('Edited Successfully : ' + responseData.content);
-                console.log(this.state.todoTable);
-
+                console.log('Edited Successfully in DB: ' , responseData);
                 const updatedTodoTable = this.state.todoTable.map((todoItem) => {
                     if (todoItem.id === todoItemId) {
                       return { ...todoItem, title: responseData.title, content: responseData.content };
@@ -118,34 +114,33 @@ class ToDoTable extends React.Component{
             } else{
                 console.error('Unexpected response:', responseData);
             }
-        })
-        .catch((error)=>{
-            console.error('Error : ', error);
-        })
-        
 
-
+        }catch(error){
+            console.log('Error : ', error);
+        }
     }
 
-    componentDidMount() {
-        // Call API to retrieve total game numbers that been played
-        fetch("http://localhost:3000/todoTable",{
-         
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            return response.json();
-          })
-          .then((data) => {
-            this.setState({
-                todoTable: data
+
+    async componentDidMount() {
+
+        try{
+            const response = await fetch("http://localhost:3000/todoTable",{
+                method:'GET',
+                headers:{
+                    'Content-Type':'application/json',
+                },
             });
-          })
-          .catch((error) => {
-            console.error(error);
-          });
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+
+            const responseData = await response.json();
+            this.setState({
+                todoTable: responseData
+            });
+        }catch(error){
+            console.log('Error : ', error)
+        }
       }
 
     render(){

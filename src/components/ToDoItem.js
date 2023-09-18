@@ -34,10 +34,6 @@ class ToDoItem extends React.Component{
         this.props.onDelete(this.props.id);
     }
 
-    // handleEdit = ()=>{
-    //     console.log("This item has been edit");
-    //     this.props.onEdit(this.props.id);
-    // }
     render(){
         return(
         <div className="card"> 
