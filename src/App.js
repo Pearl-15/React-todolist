@@ -1,7 +1,7 @@
 import './App.css';
 
 import React from 'react';
-import NoteTable from './components/ToDoTable';
+import ToDoTable from './components/ToDoTable';
 import HeaderSection from './components/HeaderSection';
 import { Layout } from "antd";
 import FooterSection from './components/FooterSection';
@@ -19,7 +19,7 @@ class App extends React.Component{
           <Layout>
               <HeaderSection />
                 <Content>
-                  <NoteTable />
+                  <ToDoTable />
                 </Content>
                   <FooterSection />
           </Layout>

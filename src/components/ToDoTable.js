@@ -1,6 +1,6 @@
 import React from 'react';
 import ToDoItem from './ToDoItem';
-import NoteForm from './ToDoForm';
+import ToDoForm from './ToDoForm';
 import { Col, Row } from "antd";
 
 class ToDoTable extends React.Component{
@@ -145,10 +145,10 @@ class ToDoTable extends React.Component{
 
     render(){
         return(   
-            <div className='note-table'>
+            <div>
                 <Row>
                     <Col span={8}>
-                        <NoteForm onAdd={this.addToDo} />
+                        <ToDoForm onAdd={this.addToDo} />
                     </Col>
                 </Row>
                 <Row gutter={[16,20]}>

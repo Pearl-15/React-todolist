@@ -75,7 +75,7 @@ class ToDoForm extends React.Component{
                     <Form> 
                         <Form.Item label='Title' validateStatus={titleError ? 'error': ''} help={titleError || ''}>
                             {getFieldDecorator('title',{
-                                rules:[{required: true, message:'Please input note title!'}],
+                                rules:[{required: true, message:'Please input to do title!'}],
                             })(
                             <Input 
                             placeholder='Title...' 
@@ -83,7 +83,7 @@ class ToDoForm extends React.Component{
                         </Form.Item>  
                         <Form.Item label='Content' validateStatus={contentError ? 'error':''} help={contentError || ''}>
                             {getFieldDecorator ('content', {
-                                rules:[{required: true, message:'Please input note content'}],
+                                rules:[{required: true, message:'Please input to do content'}],
                             })(
                             <TextArea
                             placeholder='Content...' 
