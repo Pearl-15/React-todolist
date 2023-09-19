@@ -49,18 +49,6 @@
   margin-bottom: 20px;
 }
 
-.ant-layout-footer {
-  background-color: grey;
-  color: white;
-  text-align: center;
-  padding: 10px;
-  margin-top: 20px;
-}
-
-.footerSection .ant-typography {
-  color: white;
-}
-
 .note-table {
   max-height: calc(100vh - 64px - 48px); /* 64px for header and 48px for footer */
   overflow-y: auto;
