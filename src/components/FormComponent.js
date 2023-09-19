@@ -12,9 +12,7 @@ class FormComponent extends React.Component {
     const titleError = getFieldError('title');
     const contentError = getFieldError('content');
 
-    return (
-
-   
+    return (   
       <Form>
         <Form.Item label='Title' validateStatus={titleError ? 'error' : ''} help={titleError || ''}>
           {getFieldDecorator('title', {
@@ -35,9 +33,6 @@ class FormComponent extends React.Component {
             />)}
         </Form.Item>
       </Form>
-
-
-
     );
   }
 }

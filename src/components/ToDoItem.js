@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Button,Icon, Modal, Form } from 'antd';
+import { Button,Icon,Form } from 'antd';
 import FormComponent from './FormComponent';
 import styled from 'styled-components';
 import { StyledModal } from './ToDoForm';

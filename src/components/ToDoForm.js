@@ -1,9 +1,8 @@
 import React from 'react';
-import { Button, Typography, Modal , Form} from 'antd';
+import { Button, Modal , Form} from 'antd';
 import 'antd/dist/antd.css';
 import FormComponent from './FormComponent'; 
 import styled from 'styled-components';
-const { Text } = Typography;
 
 const StyledButton = styled(Button)`
 font-weight: bold;
@@ -39,7 +38,7 @@ class ToDoForm extends React.Component {
     this.setState({ isModalVisible: true });
   };
 
-  handleSubmit = (e) => {
+  handleOk = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -58,11 +57,6 @@ class ToDoForm extends React.Component {
   render() {
     return (
         <div>
-        <Text> Create To Do </Text>
-        
-        {/* <Button type="primary" onClick={this.handleShowModal}>
-          Add ToDo
-        </Button> */}
         <StyledButton type="primary" onClick={this.handleShowModal}>
           Add ToDo
         </StyledButton> 
@@ -70,10 +64,10 @@ class ToDoForm extends React.Component {
         <StyledModal
           title="Add ToDo"
           visible={this.state.isModalVisible}
-          onOk={this.handleSubmit}
+          onOk={this.handleOk}
           onCancel={this.handleCancel}
         >
-          <FormComponent form={this.props.form} /> {/* Use the FormComponent here */}
+          <FormComponent form={this.props.form} />
         </StyledModal>
         </div>
     );

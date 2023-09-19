@@ -6,15 +6,6 @@
   flex-direction: column;
 }
 
-
-.ant-layout-header{
-  background-color: #f5ba13;
-  margin: auto -20px;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
-  color: #fff;
-  font-size: x-large;
-  font-weight: bold;
-}
 .ant-layout-content {
   flex: 1;
   background-color: #fff;
