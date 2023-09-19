@@ -3,17 +3,17 @@ import ToDoItem from './ToDoItem';
 import ToDoForm from './ToDoForm';
 import { Col, Row } from "antd";
 
-class ToDoTable extends React.Component{
+class ToDoTable extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
-            todoTable:[],
+            todoTable: [],
         }
     }
 
-    addToDo = async(newToDo)=>{
-        try{
+    addToDo = async (newToDo) => {
+        try {
             const response = await fetch('http://localhost:3000/todoTable', {
                 method: 'POST',
                 headers: {
@@ -39,83 +39,83 @@ class ToDoTable extends React.Component{
             }
 
 
-        }catch(error){
-            console.log('Error : ' , error)
+        } catch (error) {
+            console.log('Error : ', error)
 
         }
 
     }
 
-    onDelete = async(todoItemId)=>{
+    onDelete = async (todoItemId) => {
 
-        try{
+        try {
 
             const response = await fetch(`http://localhost:3000/todoTable/${todoItemId}`, {
                 method: 'DELETE',
                 headers: {
-                  'Content-Type': 'application/json',
+                    'Content-Type': 'application/json',
                 },
-              });
-
-              if (!response.ok) {
-                throw new Error('Network response was not ok');
-              }
-
-              const responseData = await response.json();
-
-              if(responseData){
-                console.log('ToDo deleted successfully');
-                this.setState({
-                    todoTable: this.state.todoTable.filter((todoItem)=>{
-                        return todoItem.id !== todoItemId ;
-                    })
-                });
-
-              }else {
-                console.error('Unexpected response:', responseData);
-              }
-
-
-        }catch(error){
-            console.log('Error: ', error);
-        }     
-    }
-
-    onEdit = async(todoItemId, updatedTitle, updatedContent)=>{
-
-        try{
-            const response = await fetch(`http://localhost:3000/todoTable/${todoItemId}`,{
-                method:'PATCH',
-                headers:{
-                    'Content-Type':'application/json',
-                },
-                body: JSON.stringify({title: updatedTitle, content: updatedContent}),
             });
 
-            if(!response.ok){
+            if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
 
             const responseData = await response.json();
-            if(responseData){
-                console.log('Edited Successfully in DB: ' , responseData);
+
+            if (responseData) {
+                console.log('ToDo deleted successfully');
+                this.setState({
+                    todoTable: this.state.todoTable.filter((todoItem) => {
+                        return todoItem.id !== todoItemId;
+                    })
+                });
+
+            } else {
+                console.error('Unexpected response:', responseData);
+            }
+
+
+        } catch (error) {
+            console.log('Error: ', error);
+        }
+    }
+
+    onEdit = async (todoItemId, updatedTitle, updatedContent) => {
+
+        try {
+            const response = await fetch(`http://localhost:3000/todoTable/${todoItemId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ title: updatedTitle, content: updatedContent }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const responseData = await response.json();
+            if (responseData) {
+                console.log('Edited Successfully in DB: ', responseData);
                 const updatedTodoTable = this.state.todoTable.map((todoItem) => {
                     if (todoItem.id === todoItemId) {
-                      return { ...todoItem, title: responseData.title, content: responseData.content };
+                        return { ...todoItem, title: responseData.title, content: responseData.content };
                     }
                     return todoItem;
-                  });
+                });
 
                 this.setState({
                     todoTable: updatedTodoTable,
                 });
-          
 
-            } else{
+
+            } else {
                 console.error('Unexpected response:', responseData);
             }
 
-        }catch(error){
+        } catch (error) {
             console.log('Error : ', error);
         }
     }
@@ -123,28 +123,28 @@ class ToDoTable extends React.Component{
 
     async componentDidMount() {
 
-        try{
-            const response = await fetch("http://localhost:3000/todoTable",{
-                method:'GET',
-                headers:{
-                    'Content-Type':'application/json',
+        try {
+            const response = await fetch("http://localhost:3000/todoTable", {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
             });
             if (!response.ok) {
                 throw new Error("Network response was not ok");
-              }
+            }
 
             const responseData = await response.json();
             this.setState({
                 todoTable: responseData
             });
-        }catch(error){
+        } catch (error) {
             console.log('Error : ', error)
         }
-      }
+    }
 
-    render(){
-        return(   
+    render() {
+        return (
             <div>
                 <Row>
                     <Col span={8}>
@@ -152,26 +152,24 @@ class ToDoTable extends React.Component{
                     </Col>
                 </Row>
 
-                <Row gutter={[16,20]}>
-                {this.state.todoTable.map((todoItem)=>{
-                    return (
-                       
+                <Row gutter={[16, 20]}>
+                    {this.state.todoTable.map((todoItem) => {
+                        return (
+
                             <Col span={4} key={todoItem.id}>
-                            <ToDoItem
-                                id={todoItem.id}
-                                title={todoItem.title}
-                                content={todoItem.content}
-                                onDelete={this.onDelete}
-                                onEdit={this.onEdit}
-                            />
+                                <ToDoItem
+                                    id={todoItem.id}
+                                    title={todoItem.title}
+                                    content={todoItem.content}
+                                    onDelete={this.onDelete}
+                                    onEdit={this.onEdit}
+                                />
                             </Col>
-                         
-                    
-                    )
-                })}
-                </Row>  
+                        )
+                    })}
+                </Row>
             </div>
-       
+
         )
     }
 }
