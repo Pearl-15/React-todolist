@@ -151,6 +151,7 @@ class ToDoTable extends React.Component{
                         <ToDoForm onAdd={this.addToDo} />
                     </Col>
                 </Row>
+
                 <Row gutter={[16,20]}>
                 {this.state.todoTable.map((todoItem)=>{
                     return (

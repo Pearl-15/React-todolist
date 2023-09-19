@@ -5,7 +5,7 @@ import ToDoTable from './components/ToDoTable';
 import HeaderSection from './components/HeaderSection';
 import { Layout } from "antd";
 import FooterSection from './components/FooterSection';
-import './customize.scss'; // Adjust the path to match your SCSS file's location
+// import './customize.scss'; // Adjust the path to match your SCSS file's location
 
 const {Content} = Layout;
 
