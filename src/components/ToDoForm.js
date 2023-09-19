@@ -38,23 +38,16 @@ class ToDoForm extends React.Component {
     this.setState({ isModalVisible: true });
   };
 
-  handleOk = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
+  handleOk = (values) => {
         this.props.onAdd(values);
-        this.handleCancel();
-      }
-    });
+        this.setState({ isModalVisible: false });
   };
 
-  handleCancel = () => {
-    this.props.form.resetFields();
+  handleCancel= () => {
     this.setState({ isModalVisible: false });
-  };
-
-  render() {
+};
+  
+  render(){
     return (
         <div>
         <StyledButton type="primary" onClick={this.handleShowModal}>
@@ -63,15 +56,20 @@ class ToDoForm extends React.Component {
 
         <StyledModal
           title="Add ToDo"
-          visible={this.state.isModalVisible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
+          visible={this.state.isModalVisible} 
+          footer={null}
+          closable={false}    
         >
-          <FormComponent form={this.props.form} />
+          <FormComponent     
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}/>
         </StyledModal>
         </div>
     );
   }
 }
 
-export default Form.create({ name: 'to_do_form' })(ToDoForm);
+
+
+
+export default ToDoForm;

@@ -1,11 +1,29 @@
 import React from 'react';
-import { Form, Input } from 'antd';
+import { Form, Input , Button} from 'antd';
 
 
 const { TextArea } = Input;
 
 
 class FormComponent extends React.Component {
+
+  handleSubmit = e => {
+    e.preventDefault();
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        console.log('Received values of form From FormComponent: ', values);
+        this.props.onOk(values);
+
+      }
+    });
+  };
+
+  handleCancel = e =>{
+    e.preventDefault();
+    console.log('Cancel has been click')
+    this.props.onCancel();
+  }
+
   render() {
     const { getFieldDecorator, getFieldError } = this.props.form;
     const { title, content } = this.props; // Receive title and content as props
@@ -13,7 +31,7 @@ class FormComponent extends React.Component {
     const contentError = getFieldError('content');
 
     return (   
-      <Form>
+      <Form onSubmit={this.handleSubmit}>
         <Form.Item label='Title' validateStatus={titleError ? 'error' : ''} help={titleError || ''}>
           {getFieldDecorator('title', {
             initialValue: title,
@@ -32,7 +50,18 @@ class FormComponent extends React.Component {
               placeholder='Content...'
             />)}
         </Form.Item>
-      </Form>
+        <Form.Item>
+        
+          <Button type="primary" htmlType="submit">
+            Ok
+          </Button>
+
+          <Button type="primary" onClick={this.handleCancel}>
+            Cancel
+          </Button>
+
+        </Form.Item>      
+        </Form>
     );
   }
 }

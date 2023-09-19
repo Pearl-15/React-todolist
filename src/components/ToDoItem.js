@@ -31,28 +31,33 @@ class ToDoItem extends React.Component {
     });
   };
 
-  handleOk = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
+  // handleOk = (e) => {
+  //   e.preventDefault();
+  //   this.props.form.validateFields((err, values) => {
+  //     if (!err) {
+  //       console.log('Received values of form: ', values);
         
-        this.props.onEdit(this.props.id,  values.title, values.content );
+  //       this.props.onEdit(this.props.id,  values.title, values.content );
 
-        this.setState({
-            editedTitle: values.title,
-            editedContent: values.editedContent
-        })
+  //       this.setState({
+  //           editedTitle: values.title,
+  //           editedContent: values.editedContent
+  //       })
 
-        this.handleCancel();
-      }
-    });
+  //       this.handleCancel();
+  //     }
+  //   });
+  // };
+
+  handleOk = (values) => {
+      this.props.onEdit(this.props.id, values.title, values.content);
+      this.setState({ isModalVisible: false });
   };
 
-  handleCancel = () => {
-    this.props.form.resetFields();
-    this.setState({ isModalVisible: false });
+  handleCancel= () => {
+  this.setState({ isModalVisible: false });
   };
+
 
   handleDelete = () => {
     this.props.onDelete(this.props.id);
@@ -61,6 +66,7 @@ class ToDoItem extends React.Component {
 
 
   render() {
+
     return (
     <StyledToDoCard>
         <h3>{this.props.title}</h3>
@@ -75,13 +81,14 @@ class ToDoItem extends React.Component {
         <StyledModal
           title="Edit ToDo"
           visible={this.state.isModalVisible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
+          footer={null}
+          closable={false}
         >
           <FormComponent
             title={this.state.editedTitle}
             content={this.state.editedContent}
-            form={this.props.form}
+            onOk={this.handleOk}
+            onCancel={this.handleCancel}
           />
         </StyledModal>
     </StyledToDoCard>
@@ -89,5 +96,5 @@ class ToDoItem extends React.Component {
   }
 }
 
-export default Form.create({ name: 'to_do_item' }) (ToDoItem);
+export default ToDoItem;
 
