@@ -2,6 +2,9 @@ import React from 'react';
 import ToDoItem from './ToDoItem';
 import ToDoForm from './ToDoForm';
 import { Col, Row } from "antd";
+import moment from 'moment';
+import { fetchAPI } from './API';
+import Filter from './Filter';
 
 class ToDoTable extends React.Component {
 
@@ -120,6 +123,92 @@ class ToDoTable extends React.Component {
         }
     }
 
+    onChangeStatus = async(updatedStatus, todoItemId)=>{
+        console.log(" Status change from To Do Table ", updatedStatus, todoItemId)
+        try {
+            const response = await fetch(`http://localhost:3000/todoTable/${todoItemId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: updatedStatus}),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const responseData = await response.json();
+
+            // const obj = { status: updatedStatus};
+           
+            // const responseData = fetchAPI(todoItemId, obj )
+        
+            if (responseData) {
+                console.log('Edited Successfully in DB: ', responseData);
+                const updatedTodoTable = this.state.todoTable.map((todoItem) => {
+                    if (todoItem.id === todoItemId) {
+                        return { ...todoItem, status: responseData.status };
+                    }
+                    return todoItem;
+                });
+
+                this.setState({
+                    todoTable: updatedTodoTable,
+                });
+
+
+            } else {
+                console.error('Unexpected response:', responseData);
+            }
+
+        } catch (error) {
+            console.log('Error : ', error);
+        }
+    }
+
+    onFilter = async (value)=>{
+        console.log(" From To Do Table Filter ", value);
+        let selectedStatus;
+        if(value === "completed"){
+            selectedStatus = true
+        }else if(value === "uncompleted"){
+            selectedStatus = false
+        }else{
+            selectedStatus = ""
+        }
+
+        try {
+            const response = await fetch("http://localhost:3000/todoTable", {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+
+            const responseData = await response.json();
+
+            // Use filter() to filter the todoTable based on selectedStatus
+            const filteredItems = responseData.filter((todoItem) => {
+                if(selectedStatus !== ""){
+                    return todoItem.status === selectedStatus;
+                }
+                return todoItem
+              
+            });
+            
+            this.setState({
+                todoTable: filteredItems
+            });
+        } catch (error) {
+            console.log('Error : ', error)
+        }
+
+    }
+
 
     async componentDidMount() {
 
@@ -143,6 +232,8 @@ class ToDoTable extends React.Component {
         }
     }
 
+ 
+
     render() {
         return (
             <div>
@@ -152,17 +243,32 @@ class ToDoTable extends React.Component {
                     </Col>
                 </Row>
 
+                <Row>
+                    <Col span={8}>
+                        <Filter onFilter={this.onFilter}/>
+                    </Col>
+                </Row>
+
                 <Row gutter={[16, 20]}>
+
                     {this.state.todoTable.map((todoItem) => {
+
+                        const dateMoment = moment(todoItem.date);
                         return (
 
-                            <Col span={4} key={todoItem.id}>
+                            
+                        // {/* checkStatus if the rangePicker[1] (Means End Date) < current date then show unfinish */}
+
+                            <Col span={6} key={todoItem.id}>
                                 <ToDoItem
                                     id={todoItem.id}
                                     title={todoItem.title}
                                     content={todoItem.content}
+                                    date={dateMoment}
+                                    status={todoItem.status}
                                     onDelete={this.onDelete}
                                     onEdit={this.onEdit}
+                                    onChangeStatus={this.onChangeStatus}                                    
                                 />
                             </Col>
                         )

@@ -1,17 +1,25 @@
 
 import React from 'react';
-import { Button,Icon,Form } from 'antd';
+import { Button,Icon,Tag, Row, Col, Switch} from 'antd';
 import FormComponent from './FormComponent';
 import styled from 'styled-components';
 import { StyledModal } from './ToDoForm';
+import moment from 'moment';
 
+const dateFormat = 'DD/MM/YY';
 
 const StyledToDoCard = styled.div`
   border: 1.5px solid black;
   border-color: #f5ba13;
-  padding: 20px;
+  padding: 10px;
   border-radius: 0.8rem;
 `;
+
+const StyledSwitch = styled(Switch)`
+  &.ant-switch-checked {
+    background-color: #3ec166; 
+  }
+`
 
 class ToDoItem extends React.Component {
   constructor(props) {
@@ -20,6 +28,7 @@ class ToDoItem extends React.Component {
       isModalVisible: false,
       editedTitle: this.props.title,
       editedContent: this.props.content,
+      editedDate: this.props.date,
     };
   }
 
@@ -28,26 +37,9 @@ class ToDoItem extends React.Component {
       isModalVisible: true,
       editedTitle: this.props.title,
       editedContent: this.props.content,
+      editedDate: this.props.date
     });
   };
-
-  // handleOk = (e) => {
-  //   e.preventDefault();
-  //   this.props.form.validateFields((err, values) => {
-  //     if (!err) {
-  //       console.log('Received values of form: ', values);
-        
-  //       this.props.onEdit(this.props.id,  values.title, values.content );
-
-  //       this.setState({
-  //           editedTitle: values.title,
-  //           editedContent: values.editedContent
-  //       })
-
-  //       this.handleCancel();
-  //     }
-  //   });
-  // };
 
   handleOk = (values) => {
       this.props.onEdit(this.props.id, values.title, values.content);
@@ -63,13 +55,36 @@ class ToDoItem extends React.Component {
     this.props.onDelete(this.props.id);
   };
 
+  handleTaskDone = (e)=>{
+    console.log('target : ', e)
+    this.props.onChangeStatus(e, this.props.id)
+  }
+ 
 
+  formatDate = (date)=> {
+    return(moment(date).format(dateFormat))}
 
   render() {
 
+    const fromatedDate = this.formatDate(this.state.editedDate); 
+
     return (
     <StyledToDoCard>
-        <h3>{this.props.title}</h3>
+      
+        <StyledSwitch
+              checked = {this.props.status}
+              checkedChildren={<Icon type="check"/>}
+              unCheckedChildren={<Icon type="close" />}
+              onChange={this.handleTaskDone}
+            /> 
+        <br></br>
+
+        {this.props.status ? <Tag color="#3ec166">{this.props.title}</Tag>:  <Tag color="grey">{this.props.title}</Tag>}
+
+        <br></br>
+         
+        <Tag>{fromatedDate}</Tag>       
+  
         <p>{this.props.content}</p>
 
         <Button onClick={this.handleDelete} type="danger" size="small" shape="circle">
@@ -78,6 +93,7 @@ class ToDoItem extends React.Component {
         <Button onClick={this.showModal} type="primary" size="small" shape="circle">
           <Icon type="edit" />
         </Button>
+
         <StyledModal
           title="Edit ToDo"
           visible={this.state.isModalVisible}
@@ -87,6 +103,7 @@ class ToDoItem extends React.Component {
           <FormComponent
             title={this.state.editedTitle}
             content={this.state.editedContent}
+            date={this.state.editedDate}
             onOk={this.handleOk}
             onCancel={this.handleCancel}
           />

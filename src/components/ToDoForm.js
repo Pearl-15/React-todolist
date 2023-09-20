@@ -1,8 +1,11 @@
 import React from 'react';
-import { Button, Modal , Form} from 'antd';
+import { Button, Modal } from 'antd';
+import styled from 'styled-components';
 import 'antd/dist/antd.css';
 import FormComponent from './FormComponent'; 
-import styled from 'styled-components';
+import moment from 'moment';
+
+const today = moment();
 
 const StyledButton = styled(Button)`
 font-weight: bold;
@@ -26,6 +29,8 @@ export const StyledModal = styled(Modal)`
  }
 `;
 
+
+
 class ToDoForm extends React.Component {
   constructor(props) {
     super(props);
@@ -46,8 +51,11 @@ class ToDoForm extends React.Component {
   handleCancel= () => {
     this.setState({ isModalVisible: false });
 };
+
   
   render(){
+
+  
     return (
         <div>
         <StyledButton type="primary" onClick={this.handleShowModal}>
@@ -60,7 +68,11 @@ class ToDoForm extends React.Component {
           footer={null}
           closable={false}    
         >
-          <FormComponent     
+          
+          <FormComponent 
+          title=""
+          content=""
+          date={today}    
           onOk={this.handleOk}
           onCancel={this.handleCancel}/>
         </StyledModal>
