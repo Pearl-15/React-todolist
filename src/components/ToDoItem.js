@@ -45,7 +45,7 @@ class ToDoItem extends React.Component {
   };
 
   handleOk = (values) => {
-    this.props.onEdit(this.props.id, values.title, values.content);
+    this.props.onEdit(this.props.id, values.title, values.content, values.date);
     this.setState({ isModalVisible: false });
   };
 
@@ -63,14 +63,14 @@ class ToDoItem extends React.Component {
     this.props.onChangeStatus(e, this.props.id)
   }
 
-
   formatDate = (date) => {
     return (moment(date).format(dateFormat))
   }
+ 
 
-  render() {
+  render() {  
 
-    const fromatedDate = this.formatDate(this.state.editedDate);
+    // const fromatedDate = this.formatDate(this.props.date);
 
     return (
       <StyledToDoCard>
@@ -94,7 +94,7 @@ class ToDoItem extends React.Component {
  
         <br></br>
 
-        <Tag>{fromatedDate}</Tag>
+        <Tag>{this.formatDate(this.props.date)}</Tag>
 
         <p>{this.props.content}</p>
 

@@ -84,7 +84,7 @@ class ToDoTable extends React.Component {
         }
     }
 
-    onEdit = async (todoItemId, updatedTitle, updatedContent) => {
+    onEdit = async (todoItemId, updatedTitle, updatedContent, updatedDate) => {
 
         try {
             const response = await fetch(`http://localhost:3000/todoTable/${todoItemId}`, {
@@ -92,7 +92,7 @@ class ToDoTable extends React.Component {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ title: updatedTitle, content: updatedContent }),
+                body: JSON.stringify({ title: updatedTitle, content: updatedContent, date: updatedDate }),
             });
 
             if (!response.ok) {
@@ -104,7 +104,7 @@ class ToDoTable extends React.Component {
                 console.log('Edited Successfully in DB: ', responseData);
                 const updatedTodoTable = this.state.todoTable.map((todoItem) => {
                     if (todoItem.id === todoItemId) {
-                        return { ...todoItem, title: responseData.title, content: responseData.content };
+                        return { ...todoItem, title: responseData.title, content: responseData.content, date: responseData.date };
                     }
                     return todoItem;
                 });
