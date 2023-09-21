@@ -72,7 +72,7 @@ class FormComponent extends React.Component {
         </Form.Item>
         <Form.Item label='Title' validateStatus={titleError ? 'error' : ''} help={titleError || ''}>
           {getFieldDecorator('title', {
-            rules: [{ required: true, message: 'Please input todo title!' }],
+            rules: [{ required: true, message: 'Please input todo title!' }, { max: 20, message: 'Title must not exceed 20 characters!' },],
           })(
             <Input
               placeholder='Title...'

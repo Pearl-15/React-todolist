@@ -241,11 +241,10 @@ class ToDoTable extends React.Component {
                     <Col span={8}>
                         <ToDoForm onAdd={this.addToDo} />
                     </Col>
-                </Row>
-
-                <Row>
-                    <Col span={8}>
-                        <Filter onFilter={this.onFilter}/>
+                    <Col span={8} offset={8}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                            <span style={{ marginRight: '8px', color: 'red' }}>Select Tasks</span><Filter onFilter={this.onFilter}/>
+                       </div>
                     </Col>
                 </Row>
 
@@ -255,9 +254,6 @@ class ToDoTable extends React.Component {
 
                         const dateMoment = moment(todoItem.date);
                         return (
-
-                            
-                        // {/* checkStatus if the rangePicker[1] (Means End Date) < current date then show unfinish */}
 
                             <Col span={6} key={todoItem.id}>
                                 <ToDoItem
