@@ -1,46 +1,58 @@
 
 export const fetchAPIToAdd = async (object) => {
 
-    const response = await fetch(`http://localhost:3000/todoTable`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(object),
-    });
-
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-
-    const responseData = await response.json();    
+    try {
+        const response = await fetch(`http://localhost:3000/todoTable`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(object),
+        });
     
-    return responseData
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+    
+        const responseData = await response.json();    
+        
+        return responseData
+        
+    } catch (error) {
+        console.error("Something went wrong , Error: " ,error.message);
+    }
+   
 
 }
 
 export const fetchAPIToDelete = async (id) => {
 
-    const response = await fetch(`http://localhost:3000/todoTable/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-
-    const responseData = await response.json();    
+    try {
+        const response = await fetch(`http://localhost:3000/todoTable/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
     
-    return responseData
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+    
+        const responseData = await response.json();    
+        
+        return responseData
+        
+    } catch (error) {
+        console.error("Something went wrong , Error: " ,error.message);
+        
+    }
 
 }
 
 export const  fetchAPIToEdit = async(id, object) => {
-
-    const response = await fetch(`http://localhost:3000/todoTable/${id}`, {
+    try {
+        const response = await fetch(`http://localhost:3000/todoTable/${id}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
@@ -55,24 +67,36 @@ export const  fetchAPIToEdit = async(id, object) => {
     const responseData = await response.json();    
     
     return responseData
+        
+    } catch (error) {
+        console.error("Something went wrong , Error: " ,error.message);
+    }
+
+    
 
 }
 
 export const fetchAPIToLoad = async() => {
 
-    const response = await fetch(`http://localhost:3000/todoTable`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
+    try{
+
+        const response = await fetch(`http://localhost:3000/todoTable`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
-    });
 
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
+        const responseData = await response.json();    
+        
+        return responseData
+
+    }catch(error){
+        console.error("Something went wrong , Error: " ,error.message);
     }
-
-    const responseData = await response.json();    
-    
-    return responseData
 
 }

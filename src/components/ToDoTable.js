@@ -1,7 +1,7 @@
 import React from 'react';
 import ToDoItem from './ToDoItem';
 import ToDoForm from './ToDoForm';
-import { Col, Row } from "antd";
+import { Col, Row, Tag } from "antd";
 import moment from 'moment';
 import { fetchAPIToAdd, fetchAPIToDelete, fetchAPIToEdit, fetchAPIToLoad } from './API';
 import Filter from './Filter';
@@ -62,9 +62,7 @@ class ToDoTable extends React.Component {
         }
     }
 
-    onEdit = async (todoItemId, updatedTitle, updatedContent, updatedDate) => {
-
-        
+    onEdit = async (todoItemId, updatedTitle, updatedContent, updatedDate) => {    
 
         try {
 
@@ -169,7 +167,7 @@ class ToDoTable extends React.Component {
                 todoTable: responseData
             });
         } catch (error) {
-            console.log('Error : ', error)
+            console.log('Error : ', error.message)
         }
     }
 
@@ -184,7 +182,8 @@ class ToDoTable extends React.Component {
                     </Col>
                     <Col span={8} offset={8}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-                            <span style={{ marginRight: '8px', color: 'red' }}>Select Tasks</span><Filter onFilter={this.onFilter}/>
+                            <span style={{ marginRight: '8px', color: 'white', backgroundColor:'#f5ba13' , padding:'4.5px 12px', borderRadius:'0.2rem', fontWeight:'bold'}}>Select Tasks</span>
+                            <Filter onFilter={this.onFilter}/>
                        </div>
                     </Col>
                 </Row>
