@@ -170,9 +170,7 @@ class ToDoTable extends React.Component {
             console.log('Error : ', error.message)
         }
     }
-
- 
-
+    
     render() {
         return (
             <div>

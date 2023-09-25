@@ -69,9 +69,7 @@ class ToDoItem extends React.Component {
  
 
   render() {  
-
-    // const fromatedDate = this.formatDate(this.props.date);
-
+    const isEdit = true;
     return (
       <StyledToDoCard>
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -117,6 +115,7 @@ class ToDoItem extends React.Component {
             date={this.state.editedDate}
             onOk={this.handleOk}
             onCancel={this.handleCancel}
+            isEdit={isEdit}
           />
         </StyledModal>
       </StyledToDoCard>

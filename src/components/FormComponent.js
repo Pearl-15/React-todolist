@@ -26,7 +26,7 @@ class FormComponent extends React.Component {
     setFieldsValue({
       title: this.props.title || "",
       content: this.props.content || "",
-      date: this.props.date,
+      date: this.props.date || today,
       status: this.props.status || false,
     });
 
@@ -53,8 +53,27 @@ class FormComponent extends React.Component {
   handleCancel = e =>{
     e.preventDefault();
     console.log('Cancel has been click')
+    console.log('Handle Click from : ', this.props.isEdit)
+    if(!this.props.isEdit){
+
+      //if Form component is called from AddToDo, resetFields
+      this.props.form.resetFields();
+    }else{
+
+      //if Form component is called from EditToDo, setFields to current props
+      const { setFieldsValue } = this.props.form;
+      setFieldsValue({
+        title: this.props.title,
+        content: this.props.content,
+        date: this.props.date,
+        status: this.props.status,
+      });
+    }
     this.props.onCancel();
   }
+
+
+  
 
   render() {
     const { getFieldDecorator, getFieldError } = this.props.form;

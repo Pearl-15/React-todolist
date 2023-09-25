@@ -35,26 +35,27 @@ class ToDoForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isModalVisible: false,
+      isModalVisible: false, 
+      isAddToDo:false,
     };
   }
 
   handleShowModal = () => {
-    this.setState({ isModalVisible: true });
+    this.setState({ isModalVisible: true, isAddToDo: true });
   };
 
   handleOk = (values) => {
         this.props.onAdd(values);
-        this.setState({ isModalVisible: false });
+        this.setState({ isModalVisible: false, isAddToDo: false });
   };
 
   handleCancel= () => {
-    this.setState({ isModalVisible: false });
+    this.setState({ isModalVisible: false, isAddToDo: false });
 };
 
   
   render(){
-
+    const isEdit = false
   
     return (
         <div>
@@ -69,12 +70,12 @@ class ToDoForm extends React.Component {
           closable={false}    
         >
           
-          <FormComponent 
-          title=""
-          content=""
-          date={today}    
+          <FormComponent   
           onOk={this.handleOk}
-          onCancel={this.handleCancel}/>
+          onCancel={this.handleCancel}
+          isEdit={isEdit}
+          />
+        
         </StyledModal>
         </div>
     );
