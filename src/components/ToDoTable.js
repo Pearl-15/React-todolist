@@ -3,7 +3,7 @@ import ToDoItem from './ToDoItem';
 import ToDoForm from './ToDoForm';
 import { Col, Row } from "antd";
 import moment from 'moment';
-import { fetchAPI } from './API';
+import { fetchAPI, fetchAPIToAdd, fetchAPIToDelete, fetchAPIToEdit } from './API';
 import Filter from './Filter';
 
 class ToDoTable extends React.Component {
@@ -17,19 +17,21 @@ class ToDoTable extends React.Component {
 
     addToDo = async (newToDo) => {
         try {
-            const response = await fetch('http://localhost:3000/todoTable', {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json',
-                },
-                body: JSON.stringify(newToDo),
-            });
+            // const response = await fetch('http://localhost:3000/todoTable', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-type': 'application/json',
+            //     },
+            //     body: JSON.stringify(newToDo),
+            // });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+            // if (!response.ok) {
+            //     throw new Error('Network response was not ok');
+            // }
 
-            const responseData = await response.json()
+            // const responseData = await response.json()
+
+            const responseData = await fetchAPIToAdd(newToDo);
 
             if (responseData && responseData.title && responseData.content) {
                 console.log('ToDo added successfully:', responseData);
@@ -53,18 +55,20 @@ class ToDoTable extends React.Component {
 
         try {
 
-            const response = await fetch(`http://localhost:3000/todoTable/${todoItemId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            // const response = await fetch(`http://localhost:3000/todoTable/${todoItemId}`, {
+            //     method: 'DELETE',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            // });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+            // if (!response.ok) {
+            //     throw new Error('Network response was not ok');
+            // }
 
-            const responseData = await response.json();
+            // const responseData = await response.json();
+
+            const responseData = await fetchAPIToDelete(todoItemId);
 
             if (responseData) {
                 console.log('ToDo deleted successfully');
@@ -86,20 +90,27 @@ class ToDoTable extends React.Component {
 
     onEdit = async (todoItemId, updatedTitle, updatedContent, updatedDate) => {
 
+        
+
         try {
-            const response = await fetch(`http://localhost:3000/todoTable/${todoItemId}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ title: updatedTitle, content: updatedContent, date: updatedDate }),
-            });
+            // const response = await fetch(`http://localhost:3000/todoTable/${todoItemId}`, {
+            //     method: 'PATCH',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify({ title: updatedTitle, content: updatedContent, date: updatedDate }),
+            // });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+            // if (!response.ok) {
+            //     throw new Error('Network response was not ok');
+            // }
 
-            const responseData = await response.json();
+            // const responseData = await response.json();
+
+            const obj = { title: updatedTitle, content: updatedContent, date: updatedDate };
+
+            const responseData = await fetchAPIToEdit(todoItemId, obj);
+
             if (responseData) {
                 console.log('Edited Successfully in DB: ', responseData);
                 const updatedTodoTable = this.state.todoTable.map((todoItem) => {
@@ -126,23 +137,23 @@ class ToDoTable extends React.Component {
     onChangeStatus = async(updatedStatus, todoItemId)=>{
         console.log(" Status change from To Do Table ", updatedStatus, todoItemId)
         try {
-            const response = await fetch(`http://localhost:3000/todoTable/${todoItemId}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ status: updatedStatus}),
-            });
+            // const response = await fetch(`http://localhost:3000/todoTable/${todoItemId}`, {
+            //     method: 'PATCH',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify({ status: updatedStatus}),
+            // });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+            // if (!response.ok) {
+            //     throw new Error('Network response was not ok');
+            // }
 
-            const responseData = await response.json();
+            // const responseData = await response.json();
 
-            // const obj = { status: updatedStatus};
+            const obj = { status: updatedStatus};
            
-            // const responseData = fetchAPI(todoItemId, obj )
+            const responseData = await fetchAPIToEdit(todoItemId, obj )
         
             if (responseData) {
                 console.log('Edited Successfully in DB: ', responseData);
