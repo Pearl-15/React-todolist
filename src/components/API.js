@@ -1,24 +1,5 @@
-// export async function fetchAPI(id, object){
 
-//     const response = await fetch(`http://localhost:3000/todoTable/${id}`, {
-//         method: 'PATCH',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify(object),
-//     });
-
-//     if (!response.ok) {
-//         throw new Error('Network response was not ok');
-//     }
-
-//     const responseData = await response.json();    
-    
-//     return responseData
-
-// }
-
-export async function fetchAPIToAdd(object){
+export const fetchAPIToAdd = async (object) => {
 
     const response = await fetch(`http://localhost:3000/todoTable`, {
         method: 'POST',
@@ -38,7 +19,7 @@ export async function fetchAPIToAdd(object){
 
 }
 
-export async function fetchAPIToDelete(id){
+export const fetchAPIToDelete = async (id) => {
 
     const response = await fetch(`http://localhost:3000/todoTable/${id}`, {
         method: 'DELETE',
@@ -57,7 +38,7 @@ export async function fetchAPIToDelete(id){
 
 }
 
-export async function fetchAPIToEdit(id, object){
+export const  fetchAPIToEdit = async(id, object) => {
 
     const response = await fetch(`http://localhost:3000/todoTable/${id}`, {
         method: 'PATCH',
@@ -77,7 +58,7 @@ export async function fetchAPIToEdit(id, object){
 
 }
 
-export async function fetchAPIToLoad(){
+export const fetchAPIToLoad = async() => {
 
     const response = await fetch(`http://localhost:3000/todoTable`, {
         method: 'GET',

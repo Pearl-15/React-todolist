@@ -3,7 +3,7 @@ import ToDoItem from './ToDoItem';
 import ToDoForm from './ToDoForm';
 import { Col, Row } from "antd";
 import moment from 'moment';
-import { fetchAPI, fetchAPIToAdd, fetchAPIToDelete, fetchAPIToEdit, fetchAPIToLoad } from './API';
+import { fetchAPIToAdd, fetchAPIToDelete, fetchAPIToEdit, fetchAPIToLoad } from './API';
 import Filter from './Filter';
 
 class ToDoTable extends React.Component {
@@ -17,19 +17,6 @@ class ToDoTable extends React.Component {
 
     addToDo = async (newToDo) => {
         try {
-            // const response = await fetch('http://localhost:3000/todoTable', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-type': 'application/json',
-            //     },
-            //     body: JSON.stringify(newToDo),
-            // });
-
-            // if (!response.ok) {
-            //     throw new Error('Network response was not ok');
-            // }
-
-            // const responseData = await response.json()
 
             const responseData = await fetchAPIToAdd(newToDo);
 
@@ -54,19 +41,6 @@ class ToDoTable extends React.Component {
     onDelete = async (todoItemId) => {
 
         try {
-
-            // const response = await fetch(`http://localhost:3000/todoTable/${todoItemId}`, {
-            //     method: 'DELETE',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            // });
-
-            // if (!response.ok) {
-            //     throw new Error('Network response was not ok');
-            // }
-
-            // const responseData = await response.json();
 
             const responseData = await fetchAPIToDelete(todoItemId);
 
@@ -93,19 +67,6 @@ class ToDoTable extends React.Component {
         
 
         try {
-            // const response = await fetch(`http://localhost:3000/todoTable/${todoItemId}`, {
-            //     method: 'PATCH',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify({ title: updatedTitle, content: updatedContent, date: updatedDate }),
-            // });
-
-            // if (!response.ok) {
-            //     throw new Error('Network response was not ok');
-            // }
-
-            // const responseData = await response.json();
 
             const obj = { title: updatedTitle, content: updatedContent, date: updatedDate };
 
@@ -137,19 +98,6 @@ class ToDoTable extends React.Component {
     onChangeStatus = async(updatedStatus, todoItemId)=>{
         console.log(" Status change from To Do Table ", updatedStatus, todoItemId)
         try {
-            // const response = await fetch(`http://localhost:3000/todoTable/${todoItemId}`, {
-            //     method: 'PATCH',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify({ status: updatedStatus}),
-            // });
-
-            // if (!response.ok) {
-            //     throw new Error('Network response was not ok');
-            // }
-
-            // const responseData = await response.json();
 
             const obj = { status: updatedStatus};
            
@@ -190,17 +138,6 @@ class ToDoTable extends React.Component {
         }
 
         try {
-            // const response = await fetch("http://localhost:3000/todoTable", {
-            //     method: 'GET',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            // });
-            // if (!response.ok) {
-            //     throw new Error("Network response was not ok");
-            // }
-
-            // const responseData = await response.json();
 
            const responseData = await fetchAPIToLoad();
 
@@ -226,18 +163,6 @@ class ToDoTable extends React.Component {
     async componentDidMount() {
 
         try {
-            // const response = await fetch("http://localhost:3000/todoTable", {
-            //     method: 'GET',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            // });
-            // if (!response.ok) {
-            //     throw new Error("Network response was not ok");
-            // }
-
-            // const responseData = await response.json();
-
             const responseData = await fetchAPIToLoad();
 
             this.setState({
