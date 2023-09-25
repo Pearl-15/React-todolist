@@ -76,3 +76,22 @@ export async function fetchAPIToEdit(id, object){
     return responseData
 
 }
+
+export async function fetchAPIToLoad(){
+
+    const response = await fetch(`http://localhost:3000/todoTable`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
+    const responseData = await response.json();    
+    
+    return responseData
+
+}

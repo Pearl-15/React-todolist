@@ -3,7 +3,7 @@ import ToDoItem from './ToDoItem';
 import ToDoForm from './ToDoForm';
 import { Col, Row } from "antd";
 import moment from 'moment';
-import { fetchAPI, fetchAPIToAdd, fetchAPIToDelete, fetchAPIToEdit } from './API';
+import { fetchAPI, fetchAPIToAdd, fetchAPIToDelete, fetchAPIToEdit, fetchAPIToLoad } from './API';
 import Filter from './Filter';
 
 class ToDoTable extends React.Component {
@@ -190,17 +190,19 @@ class ToDoTable extends React.Component {
         }
 
         try {
-            const response = await fetch("http://localhost:3000/todoTable", {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
+            // const response = await fetch("http://localhost:3000/todoTable", {
+            //     method: 'GET',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            // });
+            // if (!response.ok) {
+            //     throw new Error("Network response was not ok");
+            // }
 
-            const responseData = await response.json();
+            // const responseData = await response.json();
+
+           const responseData = await fetchAPIToLoad();
 
             // Use filter() to filter the todoTable based on selectedStatus
             const filteredItems = responseData.filter((todoItem) => {
@@ -224,17 +226,20 @@ class ToDoTable extends React.Component {
     async componentDidMount() {
 
         try {
-            const response = await fetch("http://localhost:3000/todoTable", {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
+            // const response = await fetch("http://localhost:3000/todoTable", {
+            //     method: 'GET',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            // });
+            // if (!response.ok) {
+            //     throw new Error("Network response was not ok");
+            // }
 
-            const responseData = await response.json();
+            // const responseData = await response.json();
+
+            const responseData = await fetchAPIToLoad();
+
             this.setState({
                 todoTable: responseData
             });
