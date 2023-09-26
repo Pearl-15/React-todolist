@@ -12,6 +12,7 @@ class ToDoTable extends React.Component {
         super(props);
         this.state = {
             todoTable: [],
+            filteredToDoTable:[]
         }
     }
 
@@ -110,8 +111,16 @@ class ToDoTable extends React.Component {
                     return todoItem;
                 });
 
+                const updatedFilteredTodoTable = this.state.filteredToDoTable.map((todoItem) => {
+                    if (todoItem.id === todoItemId) {
+                        return { ...todoItem, status: responseData.status };
+                    }
+                    return todoItem;
+                });
+
                 this.setState({
-                    todoTable: updatedTodoTable,
+                    filteredToDoTable: updatedFilteredTodoTable,
+                    todoTable: updatedTodoTable
                 });
 
 
@@ -137,10 +146,10 @@ class ToDoTable extends React.Component {
 
         try {
 
-           const responseData = await fetchAPIToLoad();
+        //    const responseData = await fetchAPIToLoad();
 
             // Use filter() to filter the todoTable based on selectedStatus
-            const filteredItems = responseData.filter((todoItem) => {
+            const filteredItems = this.state.todoTable.filter((todoItem) => {
                 if(selectedStatus !== ""){
                     return todoItem.status === selectedStatus;
                 }
@@ -149,7 +158,7 @@ class ToDoTable extends React.Component {
             });
             
             this.setState({
-                todoTable: filteredItems
+                filteredToDoTable: filteredItems
             });
         } catch (error) {
             console.log('Error : ', error)
@@ -164,13 +173,25 @@ class ToDoTable extends React.Component {
             const responseData = await fetchAPIToLoad();
 
             this.setState({
-                todoTable: responseData
+                todoTable: responseData,
+                filteredToDoTable: responseData
             });
         } catch (error) {
             console.log('Error : ', error.message)
         }
     }
-    
+
+
+    componentDidUpdate(preProps, prevState){
+        if(prevState.filteredToDoTable !== this.state.filteredToDoTable){
+            console.log("Need to update");
+            this.setState({
+                filteredToDoTable: this.state.filteredToDoTable
+            })
+        }
+    }
+
+ 
     render() {
         return (
             <div>
@@ -188,7 +209,7 @@ class ToDoTable extends React.Component {
 
                 <Row gutter={[16, 20]}>
 
-                    {this.state.todoTable.map((todoItem) => {
+                    {this.state.filteredToDoTable.map((todoItem) => {
 
                         const dateMoment = moment(todoItem.date);
                         return (
