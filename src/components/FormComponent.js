@@ -30,7 +30,7 @@ class FormComponent extends React.Component {
       status: this.props.status || false,
     });
 
-    console.log("Component Did Mount from FormComponent : ", this.props.date)
+    console.log("Component Did Mount from FormComponent : ", this.props.status)
   }
 
   componentWillUnmount() {

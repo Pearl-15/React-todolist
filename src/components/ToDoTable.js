@@ -57,9 +57,10 @@ class ToDoTable extends React.Component {
                 // Update the state with the new data after successful POST
                 this.setState((prevState) => ({
                     todoTable: [...prevState.todoTable, responseData],
-                    filteredToDoTable: [...prevState.filteredToDoTable, responseData],
-                     // Use the response data
                 }));
+
+                this.onFilter(this.state.selectedTask);
+                
             } else {
                 console.log('Unexpected response:', responseData);
             }
@@ -78,7 +79,7 @@ class ToDoTable extends React.Component {
 
             const endpoint = `${url}/${todoItemId}`
 
-            const responseData = await fetchAPI('DELETE',endpoint,todoItemId);
+            const responseData = await fetchAPI('DELETE',endpoint);
 
             if (responseData) {
                 console.log('ToDo deleted successfully');
@@ -219,6 +220,7 @@ class ToDoTable extends React.Component {
                     {this.state.filteredToDoTable.map((todoItem) => {
 
                         const dateMoment = moment(todoItem.date);
+                        console.log("Statu from ToDoTable ", todoItem.status)
                         return (
 
                             <Col span={6} key={todoItem.id}>
