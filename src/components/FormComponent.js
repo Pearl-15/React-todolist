@@ -45,6 +45,11 @@ class FormComponent extends React.Component {
       if (!err) {
         console.log('Received values of form From FormComponent: ', values); 
         this.props.onOk(values);
+        if(!this.props.isEdit){
+
+          //if Form component is called from AddToDo, resetFields
+          this.props.form.resetFields();
+        }
 
       }
     });

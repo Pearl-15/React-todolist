@@ -3,8 +3,10 @@ import ToDoItem from './ToDoItem';
 import ToDoForm from './ToDoForm';
 import { Col, Row, Tag } from "antd";
 import moment from 'moment';
-import { fetchAPIToAdd, fetchAPIToDelete, fetchAPIToEdit, fetchAPIToLoad } from './API';
+import { fetchAPI } from './API';
 import Filter from './Filter';
+
+const url = 'http://localhost:3000/todoTable';
 
 const filter = (selectedTask, todoTable)=>{
     let selectedStatus;
@@ -48,13 +50,15 @@ class ToDoTable extends React.Component {
     addToDo = async (newToDo) => {
         try {
 
-            const responseData = await fetchAPIToAdd(newToDo);
+            const responseData = await fetchAPI('POST', url, newToDo);
 
             if (responseData && responseData.title && responseData.content) {
                 console.log('ToDo added successfully:', responseData);
                 // Update the state with the new data after successful POST
                 this.setState((prevState) => ({
-                    todoTable: [...prevState.todoTable, responseData], // Use the response data
+                    todoTable: [...prevState.todoTable, responseData],
+                    filteredToDoTable: [...prevState.filteredToDoTable, responseData],
+                     // Use the response data
                 }));
             } else {
                 console.log('Unexpected response:', responseData);
@@ -72,14 +76,19 @@ class ToDoTable extends React.Component {
 
         try {
 
-            const responseData = await fetchAPIToDelete(todoItemId);
+            const endpoint = `${url}/${todoItemId}`
+
+            const responseData = await fetchAPI('DELETE',endpoint,todoItemId);
 
             if (responseData) {
                 console.log('ToDo deleted successfully');
                 this.setState({
                     todoTable: this.state.todoTable.filter((todoItem) => {
                         return todoItem.id !== todoItemId;
-                    })
+                    }),
+                    filteredToDoTable: this.state.filteredToDoTable.filter((todoItem) => {
+                        return todoItem.id !== todoItemId;
+                    }),
                 });
 
             } else {
@@ -98,7 +107,8 @@ class ToDoTable extends React.Component {
 
             const obj = { title: updatedTitle, content: updatedContent, date: updatedDate };
 
-            const responseData = await fetchAPIToEdit(todoItemId, obj);
+            const endpoint = `${url}/${todoItemId}`
+            const responseData = await fetchAPI('PATCH',endpoint , obj);
 
             if (responseData) {
                 console.log('Edited Successfully in DB: ', responseData);
@@ -111,6 +121,7 @@ class ToDoTable extends React.Component {
 
                 this.setState({
                     todoTable: updatedTodoTable,
+                    filteredToDoTable: updatedTodoTable,
                 });
 
 
@@ -129,7 +140,8 @@ class ToDoTable extends React.Component {
 
             const obj = { status: updatedStatus};
            
-            const responseData = await fetchAPIToEdit(todoItemId, obj )
+            const endpoint = `${url}/${todoItemId}`
+            const responseData = await fetchAPI('PATCH',endpoint , obj);
         
             if (responseData) {
                 console.log('Edited Successfully in DB: ', responseData);
@@ -175,7 +187,7 @@ class ToDoTable extends React.Component {
     async componentDidMount() {
 
         try {
-            const responseData = await fetchAPIToLoad();
+            const responseData = await fetchAPI('GET', url);
 
             this.setState({
                 todoTable: responseData,
