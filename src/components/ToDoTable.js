@@ -6,13 +6,42 @@ import moment from 'moment';
 import { fetchAPIToAdd, fetchAPIToDelete, fetchAPIToEdit, fetchAPIToLoad } from './API';
 import Filter from './Filter';
 
+const filter = (selectedTask, todoTable)=>{
+    let selectedStatus;
+    if(selectedTask === "completed"){
+        selectedStatus = true
+    }else if(selectedTask === "uncompleted"){
+        selectedStatus = false
+    }else{
+        selectedStatus = ""
+    }
+
+    try {
+
+        // Use filter() to filter the todoTable based on selectedStatus
+        const filteredItems = todoTable.filter((todoItem) => {
+            if(selectedStatus !== ""){
+                return todoItem.status === selectedStatus;
+            }
+            return todoItem
+          
+        });
+        
+        return filteredItems;
+    
+    } catch (error) {
+        console.log('Error : ', error)
+    }
+    }
+
 class ToDoTable extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             todoTable: [],
-            filteredToDoTable:[]
+            filteredToDoTable:[],
+            selectedTask:"",
         }
     }
 
@@ -111,18 +140,11 @@ class ToDoTable extends React.Component {
                     return todoItem;
                 });
 
-                const updatedFilteredTodoTable = this.state.filteredToDoTable.map((todoItem) => {
-                    if (todoItem.id === todoItemId) {
-                        return { ...todoItem, status: responseData.status };
-                    }
-                    return todoItem;
-                });
-
                 this.setState({
-                    filteredToDoTable: updatedFilteredTodoTable,
                     todoTable: updatedTodoTable
                 });
 
+                this.onFilter(this.state.selectedTask);
 
             } else {
                 console.error('Unexpected response:', responseData);
@@ -135,35 +157,18 @@ class ToDoTable extends React.Component {
 
     onFilter = async (value)=>{
         console.log(" From To Do Table Filter ", value);
-        let selectedStatus;
-        if(value === "completed"){
-            selectedStatus = true
-        }else if(value === "uncompleted"){
-            selectedStatus = false
-        }else{
-            selectedStatus = ""
-        }
 
-        try {
-
-        //    const responseData = await fetchAPIToLoad();
-
-            // Use filter() to filter the todoTable based on selectedStatus
-            const filteredItems = this.state.todoTable.filter((todoItem) => {
-                if(selectedStatus !== ""){
-                    return todoItem.status === selectedStatus;
-                }
-                return todoItem
-              
-            });
-            
+        //to fix the asynchronous of setState issue use callback function
+        this.setState({
+            selectedTask: value,
+        }, ()=>{
+            const filteredItems = filter(this.state.selectedTask, this.state.todoTable);
             this.setState({
                 filteredToDoTable: filteredItems
             });
-        } catch (error) {
-            console.log('Error : ', error)
-        }
 
+            console.log("this.selectedTask ", this.state.selectedTask)
+        });
     }
 
 
@@ -174,23 +179,13 @@ class ToDoTable extends React.Component {
 
             this.setState({
                 todoTable: responseData,
-                filteredToDoTable: responseData
+                filteredToDoTable: responseData,
+                selectedTask:"all"
             });
         } catch (error) {
             console.log('Error : ', error.message)
         }
     }
-
-
-    componentDidUpdate(preProps, prevState){
-        if(prevState.filteredToDoTable !== this.state.filteredToDoTable){
-            console.log("Need to update");
-            this.setState({
-                filteredToDoTable: this.state.filteredToDoTable
-            })
-        }
-    }
-
  
     render() {
         return (
