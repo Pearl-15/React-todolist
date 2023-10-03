@@ -5,6 +5,8 @@ import { Col, Row, Tag } from "antd";
 import moment from 'moment';
 import { fetchAPI } from './API';
 import Filter from './Filter';
+import { StyledModal } from './ToDoForm';
+import FormComponent from './FormComponent';
 
 const url = 'http://localhost:3000/todoTable';
 
@@ -44,11 +46,35 @@ class ToDoTable extends React.Component {
             todoTable: [],
             filteredToDoTable:[],
             selectedTask:"",
+            isFormVisible: false,
+            isFormAdd: false,
+            isFormEdit: false,
+            id: "",
+            title: "",
+            content: "",
+            status:"",
+            date: ""
+
         }
     }
 
-    addToDo = async (newToDo) => {
+    addToDo = async () => {
+        this.setState({
+            isFormVisible: true,
+            isFormAdd: true,
+        })
+    }
+
+    handleAddToDoOk = async (values) => {
+
         try {
+
+            const newToDo = {
+                title: values.title,
+                content: values.content,
+                date: values.date,
+                status: values.status,
+            }
 
             const responseData = await fetchAPI('POST', url, newToDo);
 
@@ -60,6 +86,7 @@ class ToDoTable extends React.Component {
                 }));
 
                 this.onFilter(this.state.selectedTask);
+                this.handleCancel();
                 
             } else {
                 console.log('Unexpected response:', responseData);
@@ -102,19 +129,39 @@ class ToDoTable extends React.Component {
         }
     }
 
-    onEdit = async (todoItemId, updatedTitle, updatedContent, updatedDate) => {    
+    onEdit = async (todoItemId) => {
+        //to render based on state change 
+        const targetItem = this.state.filteredToDoTable.find((item) => item.id === todoItemId);
+        const dateMoment = moment(targetItem.date);
+
+        this.setState({
+            isFormVisible: true,
+            isFormEdit: true,
+            id: targetItem.id,
+            title: targetItem.title,
+            content: targetItem.content,
+            status:targetItem.status,
+            date: dateMoment
+        });
+
+        console.log("OnEdit : ", todoItemId);
+
+    }
+
+
+    handleEditOk = async (values) => {    
 
         try {
 
-            const obj = { title: updatedTitle, content: updatedContent, date: updatedDate };
+            const obj = { title: values.title, content: values.content , date: values.date , status: values.status};
 
-            const endpoint = `${url}/${todoItemId}`
+            const endpoint = `${url}/${values.id}`
             const responseData = await fetchAPI('PATCH',endpoint , obj);
 
             if (responseData) {
                 console.log('Edited Successfully in DB: ', responseData);
                 const updatedTodoTable = this.state.todoTable.map((todoItem) => {
-                    if (todoItem.id === todoItemId) {
+                    if (todoItem.id === values.id) {
                         return { ...todoItem, title: responseData.title, content: responseData.content, date: responseData.date };
                     }
                     return todoItem;
@@ -125,6 +172,8 @@ class ToDoTable extends React.Component {
                     filteredToDoTable: updatedTodoTable,
                 });
 
+                this.handleCancel();
+
 
             } else {
                 console.error('Unexpected response:', responseData);
@@ -133,7 +182,11 @@ class ToDoTable extends React.Component {
         } catch (error) {
             console.log('Error : ', error);
         }
-    }
+    };
+
+    handleCancel = () => {
+        this.setState({ isFormAdd:false ,isFormEdit: false, isFormVisible: false });
+    };
 
     onChangeStatus = async(updatedStatus, todoItemId)=>{
         console.log(" Status change from To Do Table ", updatedStatus, todoItemId)
@@ -209,7 +262,7 @@ class ToDoTable extends React.Component {
                     </Col>
                     <Col span={8} offset={8}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-                            <span style={{ marginRight: '8px', color: 'white', backgroundColor:'#f5ba13' , padding:'4.5px 12px', borderRadius:'0.2rem', fontWeight:'bold'}}>Select Tasks</span>
+                            <span style={{ marginRight: '8px', color: 'white', backgroundColor:'#f5ba13' , padding:'4.5px 12px', borderRadius:'0.2rem', fontWeight:'bold'}}>Select Task</span>
                             <Filter onFilter={this.onFilter}/>
                        </div>
                     </Col>
@@ -238,6 +291,31 @@ class ToDoTable extends React.Component {
                         )
                     })}
                 </Row>
+
+                <StyledModal
+                    title="Edit ToDo"
+                    visible={this.state.isFormVisible}
+                    footer={null}
+                    closable={false}
+                >
+
+                    {this.state.isFormEdit &&
+                        <FormComponent
+                            id={this.state.id} //to pass to form and when form is submitted, this id will be bring together to handleOk method from values.id
+                            title={this.state.title}
+                            content={this.state.content}
+                            date={this.state.date}
+                            status={this.state.status}
+                            onOk={this.handleEditOk}
+                            onCancel={this.handleCancel}
+                        /> }
+
+                    {this.state.isFormAdd &&
+                        <FormComponent
+                            onOk={this.handleAddToDoOk}
+                            onCancel={this.handleCancel}
+                        /> }
+                </StyledModal>
             </div>
 
         )

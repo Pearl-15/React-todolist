@@ -24,6 +24,7 @@ class FormComponent extends React.Component {
     console.log('Component Did Mount')
     const { setFieldsValue } = this.props.form;
     setFieldsValue({
+      id: this.props.id ||"",
       title: this.props.title || "",
       content: this.props.content || "",
       date: this.props.date || today,
@@ -112,6 +113,9 @@ class FormComponent extends React.Component {
         </Form.Item>
         <Form.Item style={{ display: 'none' }}>
           {getFieldDecorator('status')(<Input type="hidden" />)}
+        </Form.Item>
+        <Form.Item style={{ display: 'none' }}>
+          {getFieldDecorator('id')(<Input type="hidden" />)}
         </Form.Item>
         <Form.Item>
           <Button type="default" onClick={this.handleCancel}>

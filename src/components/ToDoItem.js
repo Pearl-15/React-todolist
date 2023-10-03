@@ -25,34 +25,10 @@ const StyledSwitch = styled(Switch)`
 
 
 class ToDoItem extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isModalVisible: false,
-      editedTitle: this.props.title,
-      editedContent: this.props.content,
-      editedDate: this.props.date,
-    };
+  
+  handleEdit = ()=>{
+    this.props.onEdit(this.props.id);
   }
-
-  showModal = () => {
-    this.setState({
-      isModalVisible: true,
-      editedTitle: this.props.title,
-      editedContent: this.props.content,
-      editedDate: this.props.date
-    });
-  };
-
-  handleOk = (values) => {
-    this.props.onEdit(this.props.id, values.title, values.content, values.date);
-    this.setState({ isModalVisible: false });
-  };
-
-  handleCancel = () => {
-    this.setState({ isModalVisible: false });
-  };
-
 
   handleDelete = () => {
     this.props.onDelete(this.props.id);
@@ -99,11 +75,11 @@ class ToDoItem extends React.Component {
         <Button onClick={this.handleDelete} type="danger" size="small" shape="circle">
           <Icon type="delete" />
         </Button>
-        <Button onClick={this.showModal} type="primary" size="small" shape="circle">
+        <Button onClick={this.handleEdit} type="primary" size="small" shape="circle">
           <Icon type="edit" />
         </Button>
 
-        <StyledModal
+        {/* <StyledModal
           title="Edit ToDo"
           visible={this.state.isModalVisible}
           footer={null}
@@ -117,7 +93,7 @@ class ToDoItem extends React.Component {
             onCancel={this.handleCancel}
             isEdit={isEdit}
           />
-        </StyledModal>
+        </StyledModal> */}
       </StyledToDoCard>
     );
   }

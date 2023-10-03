@@ -32,57 +32,20 @@ export const StyledModal = styled(Modal)`
 
 
 class ToDoForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isModalVisible: false, 
-      isAddToDo:false,
-    };
-  }
 
-  handleShowModal = () => {
-    this.setState({ isModalVisible: true, isAddToDo: true });
-  };
-
-  handleOk = (values) => {
-        this.props.onAdd(values);
-        this.setState({ isModalVisible: false, isAddToDo: false });
-  };
-
-  handleCancel= () => {
-    this.setState({ isModalVisible: false, isAddToDo: false });
-};
-
-  
+  handleAddToDo = ()=>{
+    this.props.onAdd();
+  }  
   render(){
     const isEdit = false
   
     return (
         <div>
-        <StyledButton type="primary" onClick={this.handleShowModal}>
+        <StyledButton type="primary" onClick={this.handleAddToDo}>
           Add ToDo
         </StyledButton> 
-
-        <StyledModal
-          title="Add ToDo"
-          visible={this.state.isModalVisible} 
-          footer={null}
-          closable={false}    
-        >
-          
-          <FormComponent   
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          isEdit={isEdit}
-          />
-        
-        </StyledModal>
         </div>
     );
   }
 }
-
-
-
-
 export default ToDoForm;
