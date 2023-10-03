@@ -3,10 +3,13 @@ import ToDoItem from './ToDoItem';
 import ToDoForm from './ToDoForm';
 import { Col, Row, Tag } from "antd";
 import moment from 'moment';
-import { fetchAPI } from './API';
 import Filter from './Filter';
 import { StyledModal } from './ToDoForm';
 import FormComponent from './FormComponent';
+import { getToDoList } from './API/getData';
+import { addToDoItem } from './API/postData';
+import { updateToDoItem } from './API/updateData';
+import { deleteToDoItem } from './API/deleteData';
 
 const url = 'http://localhost:3000/todoTable';
 
@@ -76,7 +79,7 @@ class ToDoTable extends React.Component {
                 status: values.status,
             }
 
-            const responseData = await fetchAPI('POST', url, newToDo);
+            const responseData = await addToDoItem(newToDo);
 
             if (responseData && responseData.title && responseData.content) {
                 console.log('ToDo added successfully:', responseData);
@@ -106,7 +109,7 @@ class ToDoTable extends React.Component {
 
             const endpoint = `${url}/${todoItemId}`
 
-            const responseData = await fetchAPI('DELETE',endpoint);
+            const responseData = await deleteToDoItem(todoItemId);
 
             if (responseData) {
                 console.log('ToDo deleted successfully');
@@ -155,8 +158,7 @@ class ToDoTable extends React.Component {
 
             const obj = { title: values.title, content: values.content , date: values.date , status: values.status};
 
-            const endpoint = `${url}/${values.id}`
-            const responseData = await fetchAPI('PATCH',endpoint , obj);
+            const responseData = await updateToDoItem(values.id , obj);
 
             if (responseData) {
                 console.log('Edited Successfully in DB: ', responseData);
@@ -193,9 +195,7 @@ class ToDoTable extends React.Component {
         try {
 
             const obj = { status: updatedStatus};
-           
-            const endpoint = `${url}/${todoItemId}`
-            const responseData = await fetchAPI('PATCH',endpoint , obj);
+            const responseData = await updateToDoItem(todoItemId, obj);
         
             if (responseData) {
                 console.log('Edited Successfully in DB: ', responseData);
@@ -241,7 +241,7 @@ class ToDoTable extends React.Component {
     async componentDidMount() {
 
         try {
-            const responseData = await fetchAPI('GET', url);
+            const responseData = await getToDoList();
 
             this.setState({
                 todoTable: responseData,
