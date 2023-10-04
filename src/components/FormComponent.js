@@ -18,20 +18,37 @@ function onChange(date, dateString) {
   console.log(date, dateString);
 }
 
-class FormComponent extends React.Component {
+class FormComponent extends React.PureComponent {
 
   componentDidMount() {
     console.log('Component Did Mount')
     const { setFieldsValue } = this.props.form;
+    
     setFieldsValue({
-      id: this.props.id ||"",
-      title: this.props.title || "",
-      content: this.props.content || "",
-      date: this.props.date || today,
-      status: this.props.status || false,
+      id: this.props.selectedToDoItem.id ||"",
+      title: this.props.selectedToDoItem.title || "",
+      content: this.props.selectedToDoItem.content || "",
+      date: this.props.selectedToDoItem.date || today,
+      status: this.props.selectedToDoItem.status || false,
     });
 
     console.log("Component Did Mount from FormComponent : ", this.props.status)
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    console.log("Component Did Update from FromComponent")
+    console.log(prevProps);
+    console.log(this.props);
+    const { setFieldsValue } = this.props.form;
+    if( prevProps. selectedToDoItem.id !== this.props. selectedToDoItem.id){
+      setFieldsValue({
+        id: this.props.selectedToDoItem.id,
+        title: this.props.selectedToDoItem.title,
+        content: this.props.selectedToDoItem.content,
+        date: this.props.selectedToDoItem.date,
+        status: this.props.selectedToDoItem.status
+      })
+    }
   }
 
   componentWillUnmount() {
@@ -60,20 +77,25 @@ class FormComponent extends React.Component {
     e.preventDefault();
     console.log('Cancel has been click')
     console.log('Handle Click from : ', this.props.isEdit)
-    if(!this.props.isEdit){
+    // if(!this.props.isEdit){
 
-      //if Form component is called from AddToDo, resetFields
+    //   //if Form component is called from AddToDo, resetFields
+    //   this.props.form.resetFields();
+    // }else{
+
+    //   //if Form component is called from EditToDo, setFields to current props
+    //   const { setFieldsValue } = this.props.form;
+    //   setFieldsValue({
+    //     title: this.props.title,
+    //     content: this.props.content,
+    //     date: this.props.date,
+    //     status: this.props.status,
+    //   });
+    // }
+    if(this.props.selectedToDoItem === {}){
       this.props.form.resetFields();
     }else{
-
-      //if Form component is called from EditToDo, setFields to current props
-      const { setFieldsValue } = this.props.form;
-      setFieldsValue({
-        title: this.props.title,
-        content: this.props.content,
-        date: this.props.date,
-        status: this.props.status,
-      });
+      console.log("selected to do Item is not null")
     }
     this.props.onCancel();
   }

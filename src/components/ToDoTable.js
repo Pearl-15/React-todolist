@@ -52,12 +52,7 @@ class ToDoTable extends React.Component {
             isFormVisible: false,
             isFormAdd: false,
             isFormEdit: false,
-            id: "",
-            title: "",
-            content: "",
-            status:"",
-            date: ""
-
+            selectedToDoItem:{}
         }
     }
 
@@ -65,6 +60,7 @@ class ToDoTable extends React.Component {
         this.setState({
             isFormVisible: true,
             isFormAdd: true,
+            selectedToDoItem:{}
         })
     }
 
@@ -140,12 +136,14 @@ class ToDoTable extends React.Component {
         this.setState({
             isFormVisible: true,
             isFormEdit: true,
-            id: targetItem.id,
-            title: targetItem.title,
-            content: targetItem.content,
-            status:targetItem.status,
-            date: dateMoment
-        });
+            selectedToDoItem:{
+                            id: targetItem.id,
+                            title: targetItem.title,
+                            content: targetItem.content,
+                            status:targetItem.status,
+                            date: dateMoment
+                            }
+            });
 
         console.log("OnEdit : ", todoItemId);
 
@@ -187,7 +185,7 @@ class ToDoTable extends React.Component {
     };
 
     handleCancel = () => {
-        this.setState({ isFormAdd:false ,isFormEdit: false, isFormVisible: false });
+        this.setState({ isFormAdd:false ,isFormEdit: false, isFormVisible: false, selectedToDoItem:{} });
     };
 
     onChangeStatus = async(updatedStatus, todoItemId)=>{
@@ -299,22 +297,20 @@ class ToDoTable extends React.Component {
                     closable={false}
                 >
 
-                    {this.state.isFormEdit &&
+                    {/* {this.state.isFormEdit && */}
                         <FormComponent
-                            id={this.state.id} //to pass to form and when form is submitted, this id will be bring together to handleOk method from values.id
-                            title={this.state.title}
-                            content={this.state.content}
-                            date={this.state.date}
-                            status={this.state.status}
+                            //to pass to form and when form is submitted, this id will be bring together to handleOk method from values.id
+                            selectedToDoItem={this.state.selectedToDoItem}
                             onOk={this.handleEditOk}
                             onCancel={this.handleCancel}
-                        /> }
+                        /> 
+                        {/* } */}
 
-                    {this.state.isFormAdd &&
+                    {/* {this.state.isFormAdd &&
                         <FormComponent
                             onOk={this.handleAddToDoOk}
                             onCancel={this.handleCancel}
-                        /> }
+                        /> } */}
                 </StyledModal>
             </div>
 
