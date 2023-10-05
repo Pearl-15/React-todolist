@@ -51,17 +51,11 @@ class ToDo{
     };
 
 
-    handleAddToDoOk = async (values) => {
+    handleAddToDoOk = async (newToDo) => {
 
         try {
 
-            const newToDo = {
-                title: values.title,
-                content: values.content,
-                date: values.date,
-                status: values.status,
-            }
-
+            newToDo.status = false;
             const responseData = await addToDoItem(newToDo);
 
             if (responseData && responseData.title && responseData.content) {
@@ -114,14 +108,6 @@ class ToDo{
 
             if (responseData) {
                 console.log('ToDo deleted successfully');
-                // this.setState({
-                //     todoTable: this.state.todoTable.filter((todoItem) => {
-                //         return todoItem.id !== todoItemId;
-                //     }),
-                //     filteredToDoTable: this.state.filteredToDoTable.filter((todoItem) => {
-                //         return todoItem.id !== todoItemId;
-                //     }),
-                // });
 
                 this.todoTable = this.todoTable.filter((todoItem)=>{
                     return todoItem.id !== todoItemId;
@@ -147,6 +133,7 @@ class ToDo{
         // const targetItem = this.state.filteredToDoTable.find((item) => item.id === todoItemId);
         const targetItem = this.filteredToDoTable.find((item) => item.id === todoItemId);
         const dateMoment = moment(targetItem.date);
+        targetItem.date = dateMoment;
 
         // this.setState({
         //     isFormVisible: true,
@@ -160,21 +147,8 @@ class ToDo{
         //     });
 
       
-            this.isFormVisible = true;
-            this.selectedToDoItem = {
-                id: targetItem.id,
-                            title: targetItem.title,
-                            content: targetItem.content,
-                            status:targetItem.status,
-                            date: dateMoment
-            }
-            // selectedToDoItem:{
-            //                 id: targetItem.id,
-            //                 title: targetItem.title,
-            //                 content: targetItem.content,
-            //                 status:targetItem.status,
-            //                 date: dateMoment
-            //                 }
+        this.isFormVisible = true;
+        this.selectedToDoItem = targetItem;
 
         console.log("OnEdit : ", this.filteredToDoTable);
 
