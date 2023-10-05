@@ -50,8 +50,6 @@ class ToDoTable extends React.Component {
             filteredToDoTable:[],
             selectedTask:"",
             isFormVisible: false,
-            isFormAdd: false,
-            isFormEdit: false,
             selectedToDoItem:{}
         }
     }
@@ -59,7 +57,6 @@ class ToDoTable extends React.Component {
     addToDo = async () => {
         this.setState({
             isFormVisible: true,
-            isFormAdd: true,
             selectedToDoItem:{}
         })
     }
@@ -103,8 +100,6 @@ class ToDoTable extends React.Component {
 
         try {
 
-            const endpoint = `${url}/${todoItemId}`
-
             const responseData = await deleteToDoItem(todoItemId);
 
             if (responseData) {
@@ -135,7 +130,6 @@ class ToDoTable extends React.Component {
 
         this.setState({
             isFormVisible: true,
-            isFormEdit: true,
             selectedToDoItem:{
                             id: targetItem.id,
                             title: targetItem.title,
@@ -150,8 +144,15 @@ class ToDoTable extends React.Component {
     }
 
 
-    handleEditOk = async (values) => {    
+    handleOk = async (values) => {   
+        
+        //if AddToDo which will not give id, handleAddToDoOk
+        if(!values.id){
+            this.handleAddToDoOk(values);
+            return
+        }
 
+        //else EditToDo
         try {
 
             const obj = { title: values.title, content: values.content , date: values.date , status: values.status};
@@ -184,8 +185,14 @@ class ToDoTable extends React.Component {
         }
     };
 
-    handleCancel = () => {
-        this.setState({ isFormAdd:false ,isFormEdit: false, isFormVisible: false, selectedToDoItem:{} });
+    handleCancel = (values) => {
+        //if cancel from AddToDo FormComponent
+        if(!values){
+            this.setState({isFormVisible:false, selectedToDoItem:{}})
+        }else{ //else cancel from ToDoItem
+            this.setState({ isFormVisible: false });
+        }
+       
     };
 
     onChangeStatus = async(updatedStatus, todoItemId)=>{
@@ -297,20 +304,13 @@ class ToDoTable extends React.Component {
                     closable={false}
                 >
 
-                    {/* {this.state.isFormEdit && */}
-                        <FormComponent
-                            //to pass to form and when form is submitted, this id will be bring together to handleOk method from values.id
-                            selectedToDoItem={this.state.selectedToDoItem}
-                            onOk={this.handleEditOk}
-                            onCancel={this.handleCancel}
-                        /> 
-                        {/* } */}
-
-                    {/* {this.state.isFormAdd &&
-                        <FormComponent
-                            onOk={this.handleAddToDoOk}
-                            onCancel={this.handleCancel}
-                        /> } */}
+                <FormComponent
+                    //to pass to form and when form is submitted, this id will be bring together to handleOk method from values.id
+                    selectedToDoItem={this.state.selectedToDoItem}
+                    onOk={this.handleOk}
+                    onCancel={this.handleCancel}
+                /> 
+                
                 </StyledModal>
             </div>
 

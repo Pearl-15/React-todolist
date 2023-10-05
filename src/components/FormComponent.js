@@ -63,11 +63,20 @@ class FormComponent extends React.PureComponent {
       if (!err) {
         console.log('Received values of form From FormComponent: ', values); 
         this.props.onOk(values);
-        if(!this.props.isEdit){
 
-          //if Form component is called from AddToDo, resetFields
-          this.props.form.resetFields();
-        }
+        if(!this.props.form.getFieldValue('id')){
+          
+          //can't use resetFields() as hidden field status & date will be setback to empty, so that need to manually set 
+          // const { setFieldsValue } = this.props.form;
+          // setFieldsValue({
+          //   title: "",
+          //   content: "",
+          //   date: today,
+          //   status: false,
+          // });
+          this.componentDidMount();
+         
+            }
 
       }
     });
@@ -75,29 +84,32 @@ class FormComponent extends React.PureComponent {
 
   handleCancel = e =>{
     e.preventDefault();
-    console.log('Cancel has been click')
-    console.log('Handle Click from : ', this.props.isEdit)
-    // if(!this.props.isEdit){
+    console.log('Cancel has been click', this.props.form.getFieldValue('id'))
+    if(!this.props.form.getFieldValue('id')){
+      console.log("Add To do")
+      this.props.onCancel();
 
-    //   //if Form component is called from AddToDo, resetFields
-    //   this.props.form.resetFields();
-    // }else{
+      //alternative way to set up initial field same as componentDidMount()
+      // const { setFieldsValue } = this.props.form;
+      //     setFieldsValue({
+      //       title: "",
+      //       content: "",
+      //       date: today,
+      //       status: false,
+      //     });
 
-    //   //if Form component is called from EditToDo, setFields to current props
-    //   const { setFieldsValue } = this.props.form;
-    //   setFieldsValue({
-    //     title: this.props.title,
-    //     content: this.props.content,
-    //     date: this.props.date,
-    //     status: this.props.status,
-    //   });
-    // }
-    if(this.props.selectedToDoItem === {}){
-      this.props.form.resetFields();
+      //can call componentDidMount()??
+      this.componentDidMount();
     }else{
-      console.log("selected to do Item is not null")
-    }
-    this.props.onCancel();
+      this.props.onCancel(this.props.form.getFieldValue('id'));
+      const { setFieldsValue } = this.props.form;
+      setFieldsValue({
+        title: this.props.selectedToDoItem.title,
+        content: this.props.selectedToDoItem.content,
+        date: this.props.selectedToDoItem.date,
+        status: this.props.selectedToDoItem.status,
+      });
+    } 
   }
 
 
