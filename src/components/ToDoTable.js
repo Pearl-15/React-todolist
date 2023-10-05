@@ -1,245 +1,277 @@
 import React from 'react';
 import ToDoItem from './ToDoItem';
 import ToDoForm from './ToDoForm';
-import { Col, Row, Tag } from "antd";
+import { Col, Row } from "antd";
 import moment from 'moment';
 import Filter from './Filter';
 import { StyledModal } from './ToDoForm';
 import FormComponent from './FormComponent';
-import { getToDoList } from './API/getData';
-import { addToDoItem } from './API/postData';
-import { updateToDoItem } from './API/updateData';
-import { deleteToDoItem } from './API/deleteData';
+import { getToDoList } from '../API/getData';
+import { addToDoItem } from '../API/postData';
+import { updateToDoItem } from '../API/updateData';
+import { deleteToDoItem } from '../API/deleteData';
+import { todoStore } from '../store/ToDo';
+import { observer } from 'mobx-react';
 
-const url = 'http://localhost:3000/todoTable';
+// const filter = (selectedTask, todoTable)=>{
+//     let selectedStatus;
+//     if(selectedTask === "completed"){
+//         selectedStatus = true
+//     }else if(selectedTask === "uncompleted"){
+//         selectedStatus = false
+//     }else{
+//         selectedStatus = ""
+//     }
 
-const filter = (selectedTask, todoTable)=>{
-    let selectedStatus;
-    if(selectedTask === "completed"){
-        selectedStatus = true
-    }else if(selectedTask === "uncompleted"){
-        selectedStatus = false
-    }else{
-        selectedStatus = ""
-    }
+//     try {
 
-    try {
-
-        // Use filter() to filter the todoTable based on selectedStatus
-        const filteredItems = todoTable.filter((todoItem) => {
-            if(selectedStatus !== ""){
-                return todoItem.status === selectedStatus;
-            }
-            return todoItem
+//         // Use filter() to filter the todoTable based on selectedStatus
+//         const filteredItems = todoTable.filter((todoItem) => {
+//             if(selectedStatus !== ""){
+//                 return todoItem.status === selectedStatus;
+//             }
+//             return todoItem
           
-        });
+//         });
         
-        return filteredItems;
+//         return filteredItems;
     
-    } catch (error) {
-        console.log('Error : ', error)
-    }
-    }
+//     } catch (error) {
+//         console.log('Error : ', error)
+//     }
+//     }
 
 class ToDoTable extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            todoTable: [],
-            filteredToDoTable:[],
-            selectedTask:"",
-            isFormVisible: false,
-            selectedToDoItem:{}
-        }
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+    //         todoTable: [],
+    //         filteredToDoTable:[],
+    //         selectedTask:"",
+    //         isFormVisible: false,
+    //         selectedToDoItem:{}
+    //     }
+    // }
+
+    // addToDo = async () => {
+    //     this.setState({
+    //         isFormVisible: true,
+    //         selectedToDoItem:{}
+    //     })
+    // }
+
+    addToDo = async()=>{
+        todoStore.addToDo();
     }
 
-    addToDo = async () => {
-        this.setState({
-            isFormVisible: true,
-            selectedToDoItem:{}
-        })
-    }
+    // handleAddToDoOk = async (values) => {
 
-    handleAddToDoOk = async (values) => {
+    //     try {
 
-        try {
+    //         const newToDo = {
+    //             title: values.title,
+    //             content: values.content,
+    //             date: values.date,
+    //             status: values.status,
+    //         }
 
-            const newToDo = {
-                title: values.title,
-                content: values.content,
-                date: values.date,
-                status: values.status,
-            }
+    //         const responseData = await addToDoItem(newToDo);
 
-            const responseData = await addToDoItem(newToDo);
+    //         if (responseData && responseData.title && responseData.content) {
+    //             console.log('ToDo added successfully:', responseData);
+    //             // Update the state with the new data after successful POST
+    //             this.setState((prevState) => ({
+    //                 todoTable: [...prevState.todoTable, responseData],
+    //             }));
 
-            if (responseData && responseData.title && responseData.content) {
-                console.log('ToDo added successfully:', responseData);
-                // Update the state with the new data after successful POST
-                this.setState((prevState) => ({
-                    todoTable: [...prevState.todoTable, responseData],
-                }));
-
-                this.onFilter(this.state.selectedTask);
-                this.handleCancel();
+    //             this.onFilter(this.state.selectedTask);
+    //             this.handleCancel();
                 
-            } else {
-                console.log('Unexpected response:', responseData);
-            }
+    //         } else {
+    //             console.log('Unexpected response:', responseData);
+    //         }
 
 
-        } catch (error) {
-            console.log('Error : ', error)
+    //     } catch (error) {
+    //         console.log('Error : ', error)
 
-        }
+    //     }
 
+    // }
+
+    handleAddToDoOk = async (values)=>{
+        todoStore.handleAddToDoOk(values);
     }
 
-    onDelete = async (todoItemId) => {
+    // onDelete = async (todoItemId) => {
 
-        try {
+    //     try {
 
-            const responseData = await deleteToDoItem(todoItemId);
+    //         const responseData = await deleteToDoItem(todoItemId);
 
-            if (responseData) {
-                console.log('ToDo deleted successfully');
-                this.setState({
-                    todoTable: this.state.todoTable.filter((todoItem) => {
-                        return todoItem.id !== todoItemId;
-                    }),
-                    filteredToDoTable: this.state.filteredToDoTable.filter((todoItem) => {
-                        return todoItem.id !== todoItemId;
-                    }),
-                });
+    //         if (responseData) {
+    //             console.log('ToDo deleted successfully');
+    //             this.setState({
+    //                 todoTable: this.state.todoTable.filter((todoItem) => {
+    //                     return todoItem.id !== todoItemId;
+    //                 }),
+    //                 filteredToDoTable: this.state.filteredToDoTable.filter((todoItem) => {
+    //                     return todoItem.id !== todoItemId;
+    //                 }),
+    //             });
 
-            } else {
-                console.error('Unexpected response:', responseData);
-            }
+    //         } else {
+    //             console.error('Unexpected response:', responseData);
+    //         }
 
 
-        } catch (error) {
-            console.log('Error: ', error);
-        }
+    //     } catch (error) {
+    //         console.log('Error: ', error);
+    //     }
+    // }
+
+    onDelete = async(todoItemId)=>{
+        todoStore.onDelete(todoItemId);
     }
 
-    onEdit = async (todoItemId) => {
-        //to render based on state change 
-        const targetItem = this.state.filteredToDoTable.find((item) => item.id === todoItemId);
-        const dateMoment = moment(targetItem.date);
+    // onEdit = async (todoItemId) => {
+    //     //to render based on state change 
+    //     const targetItem = this.state.filteredToDoTable.find((item) => item.id === todoItemId);
+    //     const dateMoment = moment(targetItem.date);
 
-        this.setState({
-            isFormVisible: true,
-            selectedToDoItem:{
-                            id: targetItem.id,
-                            title: targetItem.title,
-                            content: targetItem.content,
-                            status:targetItem.status,
-                            date: dateMoment
-                            }
-            });
+    //     this.setState({
+    //         isFormVisible: true,
+    //         selectedToDoItem:{
+    //                         id: targetItem.id,
+    //                         title: targetItem.title,
+    //                         content: targetItem.content,
+    //                         status:targetItem.status,
+    //                         date: dateMoment
+    //                         }
+    //         });
 
-        console.log("OnEdit : ", todoItemId);
+    //     console.log("OnEdit : ", todoItemId);
 
+    // }
+
+    onEdit = async(todoItemId)=>{
+        todoStore.onEdit(todoItemId);
     }
 
 
-    handleOk = async (values) => {   
+    // handleOk = async (values) => {   
         
-        //if AddToDo which will not give id, handleAddToDoOk
-        if(!values.id){
-            this.handleAddToDoOk(values);
-            return
-        }
+    //     //if AddToDo which will not give id, handleAddToDoOk
+    //     if(!values.id){
+    //         this.handleAddToDoOk(values);
+    //         return
+    //     }
 
-        //else EditToDo
-        try {
+    //     //else EditToDo
+    //     try {
 
-            const obj = { title: values.title, content: values.content , date: values.date , status: values.status};
+    //         const obj = { title: values.title, content: values.content , date: values.date , status: values.status};
 
-            const responseData = await updateToDoItem(values.id , obj);
+    //         const responseData = await updateToDoItem(values.id , obj);
 
-            if (responseData) {
-                console.log('Edited Successfully in DB: ', responseData);
-                const updatedTodoTable = this.state.todoTable.map((todoItem) => {
-                    if (todoItem.id === values.id) {
-                        return { ...todoItem, title: responseData.title, content: responseData.content, date: responseData.date };
-                    }
-                    return todoItem;
-                });
+    //         if (responseData) {
+    //             console.log('Edited Successfully in DB: ', responseData);
+    //             const updatedTodoTable = this.state.todoTable.map((todoItem) => {
+    //                 if (todoItem.id === values.id) {
+    //                     return { ...todoItem, title: responseData.title, content: responseData.content, date: responseData.date };
+    //                 }
+    //                 return todoItem;
+    //             });
 
-                this.setState({
-                    todoTable: updatedTodoTable,
-                    filteredToDoTable: updatedTodoTable,
-                });
+    //             this.setState({
+    //                 todoTable: updatedTodoTable,
+    //                 filteredToDoTable: updatedTodoTable,
+    //             });
 
-                this.handleCancel();
+    //             this.handleCancel();
 
 
-            } else {
-                console.error('Unexpected response:', responseData);
-            }
+    //         } else {
+    //             console.error('Unexpected response:', responseData);
+    //         }
 
-        } catch (error) {
-            console.log('Error : ', error);
-        }
-    };
+    //     } catch (error) {
+    //         console.log('Error : ', error);
+    //     }
+    // };
 
-    handleCancel = (values) => {
-        //if cancel from AddToDo FormComponent
-        if(!values){
-            this.setState({isFormVisible:false, selectedToDoItem:{}})
-        }else{ //else cancel from ToDoItem
-            this.setState({ isFormVisible: false });
-        }
+    handleOk = async(values)=>{
+       todoStore.handleOk(values);
+    }
+
+    // handleCancel = (values) => {
+    //     //if cancel from AddToDo FormComponent
+    //     if(!values){
+    //         this.setState({isFormVisible:false, selectedToDoItem:{}})
+    //     }else{ //else cancel from ToDoItem
+    //         this.setState({ isFormVisible: false });
+    //     }
        
-    };
+    // };
+
+    handleCancel = (values)=>{
+        todoStore.handleCancel(values);
+    }
+
+    // onChangeStatus = async(updatedStatus, todoItemId)=>{
+    //     console.log(" Status change from To Do Table ", updatedStatus, todoItemId)
+    //     try {
+
+    //         const obj = { status: updatedStatus};
+    //         const responseData = await updateToDoItem(todoItemId, obj);
+        
+    //         if (responseData) {
+    //             console.log('Edited Successfully in DB: ', responseData);
+    //             const updatedTodoTable = this.state.todoTable.map((todoItem) => {
+    //                 if (todoItem.id === todoItemId) {
+    //                     return { ...todoItem, status: responseData.status };
+    //                 }
+    //                 return todoItem;
+    //             });
+
+    //             this.setState({
+    //                 todoTable: updatedTodoTable
+    //             });
+
+    //             this.onFilter(this.state.selectedTask);
+
+    //         } else {
+    //             console.error('Unexpected response:', responseData);
+    //         }
+
+    //     } catch (error) {
+    //         console.log('Error : ', error);
+    //     }
+    // }
 
     onChangeStatus = async(updatedStatus, todoItemId)=>{
-        console.log(" Status change from To Do Table ", updatedStatus, todoItemId)
-        try {
-
-            const obj = { status: updatedStatus};
-            const responseData = await updateToDoItem(todoItemId, obj);
-        
-            if (responseData) {
-                console.log('Edited Successfully in DB: ', responseData);
-                const updatedTodoTable = this.state.todoTable.map((todoItem) => {
-                    if (todoItem.id === todoItemId) {
-                        return { ...todoItem, status: responseData.status };
-                    }
-                    return todoItem;
-                });
-
-                this.setState({
-                    todoTable: updatedTodoTable
-                });
-
-                this.onFilter(this.state.selectedTask);
-
-            } else {
-                console.error('Unexpected response:', responseData);
-            }
-
-        } catch (error) {
-            console.log('Error : ', error);
-        }
+        todoStore.onChangeStatus(updatedStatus, todoItemId);
     }
 
-    onFilter = async (value)=>{
-        console.log(" From To Do Table Filter ", value);
+    // onFilter = async (value)=>{
+    //     console.log(" From To Do Table Filter ", value);
 
-        //to fix the asynchronous of setState issue use callback function
-        this.setState({
-            selectedTask: value,
-        }, ()=>{
-            const filteredItems = filter(this.state.selectedTask, this.state.todoTable);
-            this.setState({
-                filteredToDoTable: filteredItems
-            });
+    //     //to fix the asynchronous of setState issue use callback function
+    //     this.setState({
+    //         selectedTask: value,
+    //     }, ()=>{
+    //         const filteredItems = filter(this.state.selectedTask, this.state.todoTable);
+    //         this.setState({
+    //             filteredToDoTable: filteredItems
+    //         });
 
-            console.log("this.selectedTask ", this.state.selectedTask)
-        });
+    //         console.log("this.selectedTask ", this.state.selectedTask)
+    //     });
+    // }
+
+    onFilter = async(value)=>{
+       todoStore.onFilter(value);
     }
 
 
@@ -248,11 +280,16 @@ class ToDoTable extends React.Component {
         try {
             const responseData = await getToDoList();
 
-            this.setState({
-                todoTable: responseData,
-                filteredToDoTable: responseData,
-                selectedTask:"all"
-            });
+            // this.setState({
+            //     todoTable: responseData,
+            //     filteredToDoTable: responseData,
+            //     selectedTask:"all"
+            // });
+
+   
+                todoStore.todoTable = responseData;
+                todoStore.filteredToDoTable= responseData;
+                todoStore.selectedTask="all";
         } catch (error) {
             console.log('Error : ', error.message)
         }
@@ -274,11 +311,10 @@ class ToDoTable extends React.Component {
                 </Row>
 
                 <Row gutter={[16, 20]}>
-
-                    {this.state.filteredToDoTable.map((todoItem) => {
+                {/* this.state.filteredToDoTable */}
+                    {todoStore.filteredToDoTable.map((todoItem) => {
 
                         const dateMoment = moment(todoItem.date);
-                        console.log("Statu from ToDoTable ", todoItem.status)
                         return (
 
                             <Col span={6} key={todoItem.id}>
@@ -299,14 +335,14 @@ class ToDoTable extends React.Component {
 
                 <StyledModal
                     title="Edit ToDo"
-                    visible={this.state.isFormVisible}
+                    visible={todoStore.isFormVisible}
                     footer={null}
                     closable={false}
                 >
 
                 <FormComponent
                     //to pass to form and when form is submitted, this id will be bring together to handleOk method from values.id
-                    selectedToDoItem={this.state.selectedToDoItem}
+                    selectedToDoItem={todoStore.selectedToDoItem}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                 /> 
@@ -318,4 +354,4 @@ class ToDoTable extends React.Component {
     }
 }
 
-export default ToDoTable;
+export default observer(ToDoTable);

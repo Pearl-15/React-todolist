@@ -1,9 +1,7 @@
 
 import React from 'react';
-import { Button, Icon, Tag, Row, Col, Switch, Divider } from 'antd';
-import FormComponent from './FormComponent';
+import { Button, Icon, Tag, Switch } from 'antd';
 import styled from 'styled-components';
-import { StyledModal } from './ToDoForm';
 import moment from 'moment';
 
 const dateFormat = 'DD/MM/YY';
@@ -45,7 +43,7 @@ class ToDoItem extends React.Component {
  
 
   render() {  
-    const isEdit = true;
+   
     return (
       <StyledToDoCard>
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -78,22 +76,6 @@ class ToDoItem extends React.Component {
         <Button onClick={this.handleEdit} type="primary" size="small" shape="circle">
           <Icon type="edit" />
         </Button>
-
-        {/* <StyledModal
-          title="Edit ToDo"
-          visible={this.state.isModalVisible}
-          footer={null}
-          closable={false}
-        >
-          <FormComponent
-            title={this.state.editedTitle}
-            content={this.state.editedContent}
-            date={this.state.editedDate}
-            onOk={this.handleOk}
-            onCancel={this.handleCancel}
-            isEdit={isEdit}
-          />
-        </StyledModal> */}
       </StyledToDoCard>
     );
   }

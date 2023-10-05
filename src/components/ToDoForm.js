@@ -2,10 +2,6 @@ import React from 'react';
 import { Button, Modal } from 'antd';
 import styled from 'styled-components';
 import 'antd/dist/antd.css';
-import FormComponent from './FormComponent'; 
-import moment from 'moment';
-
-const today = moment();
 
 const StyledButton = styled(Button)`
 font-weight: bold;
@@ -37,7 +33,7 @@ class ToDoForm extends React.Component {
     this.props.onAdd();
   }  
   render(){
-    const isEdit = false
+ 
   
     return (
         <div>

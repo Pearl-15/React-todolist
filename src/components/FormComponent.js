@@ -13,10 +13,6 @@ function disabledDate(current) {
   return current && current < moment().startOf('day');
 }
 
-function onChange(date, dateString) {
-  console.log("On Change : ")
-  console.log(date, dateString);
-}
 
 class FormComponent extends React.PureComponent {
 
@@ -40,7 +36,7 @@ class FormComponent extends React.PureComponent {
     console.log(prevProps);
     console.log(this.props);
     const { setFieldsValue } = this.props.form;
-    if( prevProps. selectedToDoItem.id !== this.props. selectedToDoItem.id){
+    if( prevProps.selectedToDoItem.id !== this.props.selectedToDoItem.id){
       setFieldsValue({
         id: this.props.selectedToDoItem.id,
         title: this.props.selectedToDoItem.title,
