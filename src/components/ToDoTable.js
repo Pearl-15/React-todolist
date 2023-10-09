@@ -6,295 +6,148 @@ import moment from 'moment';
 import Filter from './Filter';
 import { StyledModal } from './ToDoForm';
 import FormComponent from './FormComponent';
-import { getToDoList } from '../API/getData';
-import { addToDoItem } from '../API/postData';
-import { updateToDoItem } from '../API/updateData';
-import { deleteToDoItem } from '../API/deleteData';
 import { todoStore } from '../store/ToDo';
 import { observer } from 'mobx-react';
 
-// const filter = (selectedTask, todoTable)=>{
-//     let selectedStatus;
-//     if(selectedTask === "completed"){
-//         selectedStatus = true
-//     }else if(selectedTask === "uncompleted"){
-//         selectedStatus = false
-//     }else{
-//         selectedStatus = ""
-//     }
+const filter = (selectedTask, todoTable)=>{
+    let selectedStatus;
+    if(selectedTask === "completed"){
+        selectedStatus = true
+    }else if(selectedTask === "uncompleted"){
+        selectedStatus = false
+    }else{
+        selectedStatus = ""
+    }
 
-//     try {
+    try {
 
-//         // Use filter() to filter the todoTable based on selectedStatus
-//         const filteredItems = todoTable.filter((todoItem) => {
-//             if(selectedStatus !== ""){
-//                 return todoItem.status === selectedStatus;
-//             }
-//             return todoItem
-          
-//         });
-        
-//         return filteredItems;
-    
-//     } catch (error) {
-//         console.log('Error : ', error)
-//     }
-//     }
+        // Use filter() to filter the todoTable based on selectedStatus
+        const filteredItems = todoTable.filter((todoItem) => {
+            if(selectedStatus !== ""){
+                return todoItem.status === selectedStatus;
+            }
+            return todoItem
+
+        });
+
+        return filteredItems;
+
+    } catch (error) {
+        console.log('Error : ', error)
+    }
+    }
 
 class ToDoTable extends React.Component {
 
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         todoTable: [],
-    //         filteredToDoTable:[],
-    //         selectedTask:"",
-    //         isFormVisible: false,
-    //         selectedToDoItem:{}
-    //     }
-    // }
+    constructor(props) {
+        super(props);
+        this.state = {
+            filteredToDoTable: [],
+            selectedTask: "",
+            isFormVisible: false,
+        }
+    }
 
-    // addToDo = async () => {
-    //     this.setState({
-    //         isFormVisible: true,
-    //         selectedToDoItem:{}
-    //     })
-    // }
-
-    addToDo = async()=>{
+    addToDo = async () => {
+        this.setState({
+            isFormVisible: true
+        });
         todoStore.addToDo();
     }
 
-    // handleAddToDoOk = async (values) => {
-
-    //     try {
-
-    //         const newToDo = {
-    //             title: values.title,
-    //             content: values.content,
-    //             date: values.date,
-    //             status: values.status,
-    //         }
-
-    //         const responseData = await addToDoItem(newToDo);
-
-    //         if (responseData && responseData.title && responseData.content) {
-    //             console.log('ToDo added successfully:', responseData);
-    //             // Update the state with the new data after successful POST
-    //             this.setState((prevState) => ({
-    //                 todoTable: [...prevState.todoTable, responseData],
-    //             }));
-
-    //             this.onFilter(this.state.selectedTask);
-    //             this.handleCancel();
-                
-    //         } else {
-    //             console.log('Unexpected response:', responseData);
-    //         }
-
-
-    //     } catch (error) {
-    //         console.log('Error : ', error)
-
-    //     }
-
-    // }
-
-    handleAddToDoOk = async (values)=>{
+    handleAddToDoOk = async (values) => {
         todoStore.handleAddToDoOk(values);
     }
 
-    // onDelete = async (todoItemId) => {
-
-    //     try {
-
-    //         const responseData = await deleteToDoItem(todoItemId);
-
-    //         if (responseData) {
-    //             console.log('ToDo deleted successfully');
-    //             this.setState({
-    //                 todoTable: this.state.todoTable.filter((todoItem) => {
-    //                     return todoItem.id !== todoItemId;
-    //                 }),
-    //                 filteredToDoTable: this.state.filteredToDoTable.filter((todoItem) => {
-    //                     return todoItem.id !== todoItemId;
-    //                 }),
-    //             });
-
-    //         } else {
-    //             console.error('Unexpected response:', responseData);
-    //         }
-
-
-    //     } catch (error) {
-    //         console.log('Error: ', error);
-    //     }
-    // }
-
-    onDelete = async(todoItemId)=>{
-        todoStore.onDelete(todoItemId);
+    onDelete = async (todoItemId) => {
+        await todoStore.onDelete(todoItemId);
+        this.setState({
+            filteredToDoTable: this.state.filteredToDoTable.filter((todoItem)=>{
+                return todoItem.id !== todoItemId;
+            })
+        });
     }
 
-    // onEdit = async (todoItemId) => {
-    //     //to render based on state change 
-    //     const targetItem = this.state.filteredToDoTable.find((item) => item.id === todoItemId);
-    //     const dateMoment = moment(targetItem.date);
+    onEdit = async (todoItemId) => {
+        //to render based on state change 
+        const targetItem = this.state.filteredToDoTable.find((item) => item.id === todoItemId);
+        const dateMoment = moment(targetItem.date); //convert date(string) to date(moment)
 
-    //     this.setState({
-    //         isFormVisible: true,
-    //         selectedToDoItem:{
-    //                         id: targetItem.id,
-    //                         title: targetItem.title,
-    //                         content: targetItem.content,
-    //                         status:targetItem.status,
-    //                         date: dateMoment
-    //                         }
-    //         });
-
-    //     console.log("OnEdit : ", todoItemId);
-
-    // }
-
-    onEdit = async(todoItemId)=>{
-        todoStore.onEdit(todoItemId);
-    }
-
-
-    // handleOk = async (values) => {   
+        this.setState({
+            isFormVisible: true,
+            });
         
-    //     //if AddToDo which will not give id, handleAddToDoOk
-    //     if(!values.id){
-    //         this.handleAddToDoOk(values);
-    //         return
-    //     }
+    
+        targetItem.date = dateMoment;
+        todoStore.onEdit(targetItem);
 
-    //     //else EditToDo
-    //     try {
+        console.log("OnEdit : ", todoItemId);
 
-    //         const obj = { title: values.title, content: values.content , date: values.date , status: values.status};
-
-    //         const responseData = await updateToDoItem(values.id , obj);
-
-    //         if (responseData) {
-    //             console.log('Edited Successfully in DB: ', responseData);
-    //             const updatedTodoTable = this.state.todoTable.map((todoItem) => {
-    //                 if (todoItem.id === values.id) {
-    //                     return { ...todoItem, title: responseData.title, content: responseData.content, date: responseData.date };
-    //                 }
-    //                 return todoItem;
-    //             });
-
-    //             this.setState({
-    //                 todoTable: updatedTodoTable,
-    //                 filteredToDoTable: updatedTodoTable,
-    //             });
-
-    //             this.handleCancel();
-
-
-    //         } else {
-    //             console.error('Unexpected response:', responseData);
-    //         }
-
-    //     } catch (error) {
-    //         console.log('Error : ', error);
-    //     }
-    // };
-
-    handleOk = async(values)=>{
-       todoStore.handleOk(values);
     }
 
-    // handleCancel = (values) => {
-    //     //if cancel from AddToDo FormComponent
-    //     if(!values){
-    //         this.setState({isFormVisible:false, selectedToDoItem:{}})
-    //     }else{ //else cancel from ToDoItem
-    //         this.setState({ isFormVisible: false });
-    //     }
-       
-    // };
+    handleOk = async (values) => {
+        if(!values.id){
+            //if AddToDoOK
+            await todoStore.handleAddToDoOk(values);
+            await this.onFilter(this.state.selectedTask);
+            this.handleCancel(values);
+        }else{
+            //if EditToDoOK
+            await todoStore.handleEditToDoOk(values);
+            await this.onFilter(this.state.selectedTask);
+            this.handleCancel(values);
 
-    handleCancel = (values)=>{
-        todoStore.handleCancel(values);
+        }
     }
 
-    // onChangeStatus = async(updatedStatus, todoItemId)=>{
-    //     console.log(" Status change from To Do Table ", updatedStatus, todoItemId)
-    //     try {
+    handleCancel = (values) => {
+        //if cancel from AddToDo FormComponent
+        if(!values){
+            this.setState({isFormVisible:false});
+            todoStore.handleCancel(values);
+        }else{ //else cancel from ToDoItem
+            this.setState({ isFormVisible: false });
+        }
 
-    //         const obj = { status: updatedStatus};
-    //         const responseData = await updateToDoItem(todoItemId, obj);
-        
-    //         if (responseData) {
-    //             console.log('Edited Successfully in DB: ', responseData);
-    //             const updatedTodoTable = this.state.todoTable.map((todoItem) => {
-    //                 if (todoItem.id === todoItemId) {
-    //                     return { ...todoItem, status: responseData.status };
-    //                 }
-    //                 return todoItem;
-    //             });
+    };
 
-    //             this.setState({
-    //                 todoTable: updatedTodoTable
-    //             });
+    onChangeStatus = async (updatedStatus, todoItemId) => {
+        await todoStore.onChangeStatus(updatedStatus, todoItemId);
+        await this.onFilter(this.state.selectedTask);
 
-    //             this.onFilter(this.state.selectedTask);
-
-    //         } else {
-    //             console.error('Unexpected response:', responseData);
-    //         }
-
-    //     } catch (error) {
-    //         console.log('Error : ', error);
-    //     }
-    // }
-
-    onChangeStatus = async(updatedStatus, todoItemId)=>{
-        todoStore.onChangeStatus(updatedStatus, todoItemId);
     }
 
-    // onFilter = async (value)=>{
-    //     console.log(" From To Do Table Filter ", value);
+    onFilter = async (value)=>{
+        console.log(" From To Do Table Filter ", value);
 
-    //     //to fix the asynchronous of setState issue use callback function
-    //     this.setState({
-    //         selectedTask: value,
-    //     }, ()=>{
-    //         const filteredItems = filter(this.state.selectedTask, this.state.todoTable);
-    //         this.setState({
-    //             filteredToDoTable: filteredItems
-    //         });
+        //to fix the asynchronous of setState issue use callback function
+        this.setState({
+            selectedTask: value,
+        }, ()=>{
+            const filteredItems = filter(this.state.selectedTask, todoStore.todoTable);
+            this.setState({
+                filteredToDoTable: filteredItems
+            });
 
-    //         console.log("this.selectedTask ", this.state.selectedTask)
-    //     });
-    // }
-
-    onFilter = async(value)=>{
-       todoStore.onFilter(value);
+            console.log("this.selectedTask ", this.state.selectedTask)
+        });
     }
-
 
     async componentDidMount() {
 
         try {
             const responseData = await todoStore.getToDoList();
 
-            // this.setState({
-            //     todoTable: responseData,
-            //     filteredToDoTable: responseData,
-            //     selectedTask:"all"
-            // });
-
-   
-                todoStore.todoTable = responseData;
-                todoStore.filteredToDoTable= responseData;
-                todoStore.selectedTask="all";
+            todoStore.todoTable = responseData;
+            this.setState({
+                filteredToDoTable: responseData,
+                selectedTask: "all"
+            });
         } catch (error) {
             console.log('Error : ', error.message)
         }
     }
- 
+
     render() {
         return (
             <div>
@@ -304,15 +157,15 @@ class ToDoTable extends React.Component {
                     </Col>
                     <Col span={8} offset={8}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-                            <span style={{ marginRight: '8px', color: 'white', backgroundColor:'#f5ba13' , padding:'4.5px 12px', borderRadius:'0.2rem', fontWeight:'bold'}}>Select Task</span>
-                            <Filter onFilter={this.onFilter}/>
-                       </div>
+                            <span style={{ marginRight: '8px', color: 'white', backgroundColor: '#f5ba13', padding: '4.5px 12px', borderRadius: '0.2rem', fontWeight: 'bold' }}>Select Task</span>
+                            <Filter onFilter={this.onFilter} />
+                        </div>
                     </Col>
                 </Row>
 
                 <Row gutter={[16, 20]}>
-                {/* this.state.filteredToDoTable */}
-                    {todoStore.filteredToDoTable.map((todoItem) => {
+                    {/* this.state.filteredToDoTable */}
+                    {this.state.filteredToDoTable.map((todoItem) => {
 
                         const dateMoment = moment(todoItem.date);
                         return (
@@ -326,7 +179,7 @@ class ToDoTable extends React.Component {
                                     status={todoItem.status}
                                     onDelete={this.onDelete}
                                     onEdit={this.onEdit}
-                                    onChangeStatus={this.onChangeStatus}                                    
+                                    onChangeStatus={this.onChangeStatus}
                                 />
                             </Col>
                         )
@@ -335,18 +188,18 @@ class ToDoTable extends React.Component {
 
                 <StyledModal
                     title="Edit ToDo"
-                    visible={todoStore.isFormVisible}
+                    visible={this.state.isFormVisible}
                     footer={null}
                     closable={false}
                 >
 
-                <FormComponent
-                    //to pass to form and when form is submitted, this id will be bring together to handleOk method from values.id
-                    selectedToDoItem={todoStore.selectedToDoItem}
-                    onOk={this.handleOk}
-                    onCancel={this.handleCancel}
-                /> 
-                
+                    <FormComponent
+                        //to pass to form and when form is submitted, this id will be bring together to handleOk method from values.id
+                        selectedToDoItem={todoStore.selectedToDoItem}
+                        onOk={this.handleOk}
+                        onCancel={this.handleCancel}
+                    />
+
                 </StyledModal>
             </div>
 
