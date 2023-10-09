@@ -55,9 +55,11 @@ class ToDoTable extends React.Component {
         todoStore.addToDo();
     }
 
+
     handleAddToDoOk = async (values) => {
         todoStore.handleAddToDoOk(values);
     }
+
 
     onDelete = async (todoItemId) => {
         await todoStore.onDelete(todoItemId);
@@ -71,7 +73,7 @@ class ToDoTable extends React.Component {
     onEdit = async (todoItemId) => {
         //to render based on state change 
         const targetItem = this.state.filteredToDoTable.find((item) => item.id === todoItemId);
-        const dateMoment = moment(targetItem.date); //convert date(string) to date(moment)
+        const dateMoment = moment(targetItem.date); //convert date(string) to
 
         this.setState({
             isFormVisible: true,
@@ -193,9 +195,7 @@ class ToDoTable extends React.Component {
                     closable={false}
                 >
 
-                    <FormComponent
-                        //to pass to form and when form is submitted, this id will be bring together to handleOk method from values.id
-                        selectedToDoItem={todoStore.selectedToDoItem}
+                    <FormComponent        
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
                     />
