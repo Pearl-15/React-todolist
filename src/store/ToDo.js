@@ -1,8 +1,10 @@
-import { observable, decorate, action, computed} from "mobx";
+import { observable, decorate, action, computed, flow} from "mobx";
 import { addToDoItem } from '../API/postData';
 import { updateToDoItem } from '../API/updateData';
 import { deleteToDoItem } from '../API/deleteData';
+import { getToDoList } from "../API/getData";
 import moment from 'moment';
+
 
 class ToDo{
     todoTable = [];
@@ -39,24 +41,23 @@ class ToDo{
         }
     }
 
-    addToDo = async () => {
+    addToDo = () => {
         // this.setState({
         //     isFormVisible: true,
         //     selectedToDoItem:{}
         // })
-
         this.isFormVisible = true;
         this.selectedToDoItem={};
        
     };
 
 
-    handleAddToDoOk = async (newToDo) => {
+    handleAddToDoOk = flow(function* (newToDo){
 
         try {
 
             newToDo.status = false;
-            const responseData = await addToDoItem(newToDo);
+            const responseData = yield addToDoItem(newToDo);
 
             if (responseData && responseData.title && responseData.content) {
                 console.log('ToDo added successfully:', responseData);
@@ -68,31 +69,23 @@ class ToDo{
                 // this.onFilter(this.state.selectedTask);
                 // this.handleCancel();
 
-                this.todoTable = [...this.todoTable,responseData];
-
+                this.todoTable.push(responseData);
                 this.onFilter(this.selectedTask);
-                this.handleCancel();
-
-
-         
+                this.handleCancel();     
                 
             } else {
                 console.log('Unexpected response:', responseData);
             }
-
-
         } catch (error) {
             console.log('Error : ', error)
-
         }
+    });
 
-    }
-
-    onDelete = async (todoItemId) => {
+    onDelete = flow(function* (todoItemId){
 
         try {
 
-            const responseData = await deleteToDoItem(todoItemId);
+            const responseData = yield deleteToDoItem(todoItemId);
 
             // if (responseData) {
             //     console.log('ToDo deleted successfully');
@@ -126,9 +119,9 @@ class ToDo{
         } catch (error) {
             console.log('Error: ', error);
         }
-    }
+    });
 
-    onEdit = async (todoItemId) => {
+    onEdit =  (todoItemId) => {
         //to render based on state change 
         // const targetItem = this.state.filteredToDoTable.find((item) => item.id === todoItemId);
         const targetItem = this.filteredToDoTable.find((item) => item.id === todoItemId);
@@ -155,7 +148,7 @@ class ToDo{
     }
 
 
-    handleOk = async (values) => {   
+    handleOk = flow(function* (values){   
         
         //if AddToDo which will not give id, handleAddToDoOk
         if(!values.id){
@@ -168,7 +161,7 @@ class ToDo{
 
             const obj = { title: values.title, content: values.content , date: values.date , status: values.status};
 
-            const responseData = await updateToDoItem(values.id , obj);
+            const responseData = yield updateToDoItem(values.id , obj);
 
             if (responseData) {
                 console.log('Edited Successfully in DB: ', responseData);
@@ -195,7 +188,7 @@ class ToDo{
         } catch (error) {
             console.log('Error : ', error);
         }
-    };
+    });
 
     handleCancel = (values) => {
         //if cancel from AddToDo FormComponent
@@ -210,12 +203,12 @@ class ToDo{
        
     };
 
-    onChangeStatus = async(updatedStatus, todoItemId)=>{
+    onChangeStatus = flow (function *(updatedStatus, todoItemId){
         console.log(" Status change from To Do Table ", updatedStatus, todoItemId)
         try {
 
             const obj = { status: updatedStatus};
-            const responseData = await updateToDoItem(todoItemId, obj);
+            const responseData = yield updateToDoItem(todoItemId, obj);
         
             if (responseData) {
                 console.log('Edited Successfully in DB: ', responseData);
@@ -241,41 +234,24 @@ class ToDo{
         } catch (error) {
             console.log('Error : ', error);
         }
-    }
+    });
 
-    onFilter = async (value)=>{
-        console.log(" From To Do Table Filter ", value);
-
-        //to fix the asynchronous of setState issue use callback function
-        // this.setState({
-        //     selectedTask: value,
-        // }, ()=>{
-        //     const filteredItems = filter(this.state.selectedTask, this.state.todoTable);
-        //     this.setState({
-        //         filteredToDoTable: filteredItems
-        //     });
-
-        //     console.log("this.selectedTask ", this.state.selectedTask)
-        // });
-
-
-      
-            this.selectedTask = value;
-            console.log("onFilter Value Selected Task", this.selectedTask);
-            const filteredItems = this.filter;
-            // this.setState({
-            //     filteredToDoTable: filteredItems
-            // });
-
-            this.filteredToDoTable = filteredItems
-
-            console.log("this.selectedTask ", this.selectedTask)
-    }
-
+    ////////////  ***** before adding autorun
+    onFilter = (value)=>{
+        console.log(" From To Do Table Filter ", value);      
+        this.selectedTask = value;
+        console.log("onFilter Value Selected Task", this.selectedTask);
+        const filteredItems = this.filter;
     
+        this.filteredToDoTable = filteredItems
+
+        console.log("this.selectedTask ", this.selectedTask)
+    }
     
-
-
+    getToDoList = flow(function* (){
+        const responseData = yield getToDoList();
+        return responseData;
+    });
 
 }
 
@@ -293,7 +269,7 @@ decorate(ToDo,{
     onChangeStatus: action,
     onFilter: action,
     filter:computed,
- 
+    getToDoList: action, 
 
 });
 

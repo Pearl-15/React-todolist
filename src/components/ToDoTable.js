@@ -278,7 +278,7 @@ class ToDoTable extends React.Component {
     async componentDidMount() {
 
         try {
-            const responseData = await getToDoList();
+            const responseData = await todoStore.getToDoList();
 
             // this.setState({
             //     todoTable: responseData,
