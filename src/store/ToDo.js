@@ -10,12 +10,16 @@ class ToDo{
     todoTable = [];
     selectedToDoItem = {};
 
-    addToDo = () => {
-        this.selectedToDoItem={};       
+    setToDo = (targetItem) => {
+        if(!targetItem){
+            this.selectedToDoItem= {};
+            return  
+        }
+        this.selectedToDoItem= targetItem;       
     };
 
 
-    handleAddToDoOk = flow(function* (newToDo){
+    addToDo = flow(function* (newToDo){
 
         try {
 
@@ -34,7 +38,7 @@ class ToDo{
         }
     });
 
-    onDelete = flow(function* (todoItemId){
+    deleteToDo = flow(function* (todoItemId){
 
         try {
 
@@ -56,12 +60,7 @@ class ToDo{
         }
     });
 
-    onEdit = (targetItem)=>{
-        this.selectedToDoItem = targetItem;
-    }
-
-
-    handleEditToDoOk = flow(function* (values){   
+    updateToDo = flow(function* (values){   
 
         try {
 
@@ -89,15 +88,7 @@ class ToDo{
         }
     });
 
-    handleCancel = (values) => {
-        //if cancel from AddToDo FormComponent
-        if(!values){
-          this.selectedToDoItem = {};
-        }
-       
-    };
-
-    onChangeStatus = flow (function *(updatedStatus, todoItemId){
+    updateStatus = flow (function *(updatedStatus, todoItemId){
         console.log(" Status change from To Do Table ", updatedStatus, todoItemId)
         try {
 
@@ -125,8 +116,16 @@ class ToDo{
     });
     
     getToDoList = flow(function* (){
-        const responseData = yield getToDoList();
-        return responseData;
+        try{
+            const responseData = yield getToDoList();
+            if(responseData){
+                this.todoTable = responseData;
+            }
+            
+        }catch(error){
+            console.log('Error : ', error);
+        }       
+    
     });
 
 }
@@ -134,12 +133,11 @@ class ToDo{
 decorate(ToDo,{
     todoTable: observable,
     selectedToDoItem: observable,
+    setToDo: action,
     addToDo: action,
-    handleAddToDoOk: action,
-    onDelete: action,
-    onEdit: action,
-    handleEditToDoOk: action,
-    onChangeStatus: action,
+    deleteToDo: action,
+    updateToDo: action,
+    updateStatus: action,
     getToDoList: action, 
 
 });

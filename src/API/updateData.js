@@ -21,6 +21,7 @@ const updateDataToDB = async(url, data)=>{
 }
 
 export const updateToDoItem = (id, todoItem)=>{
+    // id=100;
     const url = `http://localhost:3000/todoTable/${id}`
     return updateDataToDB(url, todoItem);
 }

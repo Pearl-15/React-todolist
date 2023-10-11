@@ -52,17 +52,17 @@ class ToDoTable extends React.Component {
         this.setState({
             isFormVisible: true
         });
-        todoStore.addToDo();
+        todoStore.setToDo();
     }
 
 
     handleAddToDoOk = async (values) => {
-        todoStore.handleAddToDoOk(values);
+        todoStore.addToDo(values);
     }
 
 
     onDelete = async (todoItemId) => {
-        await todoStore.onDelete(todoItemId);
+        await todoStore.deleteToDo(todoItemId);
         this.setState({
             filteredToDoTable: this.state.filteredToDoTable.filter((todoItem)=>{
                 return todoItem.id !== todoItemId;
@@ -81,7 +81,7 @@ class ToDoTable extends React.Component {
         
     
         targetItem.date = dateMoment;
-        todoStore.onEdit(targetItem);
+        todoStore.setToDo(targetItem);
 
         console.log("OnEdit : ", todoItemId);
 
@@ -90,31 +90,24 @@ class ToDoTable extends React.Component {
     handleOk = async (values) => {
         if(!values.id){
             //if AddToDoOK
-            await todoStore.handleAddToDoOk(values);
+            await todoStore.addToDo(values);
             await this.onFilter(this.state.selectedTask);
             this.handleCancel(values);
         }else{
             //if EditToDoOK
-            await todoStore.handleEditToDoOk(values);
+            await todoStore.updateToDo(values);
             await this.onFilter(this.state.selectedTask);
             this.handleCancel(values);
 
         }
     }
 
-    handleCancel = (values) => {
-        //if cancel from AddToDo FormComponent
-        if(!values){
-            this.setState({isFormVisible:false});
-            todoStore.handleCancel(values);
-        }else{ //else cancel from ToDoItem
-            this.setState({ isFormVisible: false });
-        }
-
+    handleCancel = () => {
+        this.setState({ isFormVisible: false });
     };
 
     onChangeStatus = async (updatedStatus, todoItemId) => {
-        await todoStore.onChangeStatus(updatedStatus, todoItemId);
+        await todoStore.updateStatus(updatedStatus, todoItemId);
         await this.onFilter(this.state.selectedTask);
 
     }
@@ -138,11 +131,9 @@ class ToDoTable extends React.Component {
     async componentDidMount() {
 
         try {
-            const responseData = await todoStore.getToDoList();
-
-            todoStore.todoTable = responseData;
+            await todoStore.getToDoList();
             this.setState({
-                filteredToDoTable: responseData,
+                filteredToDoTable: todoStore.todoTable,
                 selectedTask: "all"
             });
         } catch (error) {
@@ -166,7 +157,7 @@ class ToDoTable extends React.Component {
                 </Row>
 
                 <Row gutter={[16, 20]}>
-                    {/* this.state.filteredToDoTable */}
+          
                     {this.state.filteredToDoTable.map((todoItem) => {
 
                         const dateMoment = moment(todoItem.date);

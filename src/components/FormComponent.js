@@ -58,47 +58,22 @@ class FormComponent extends React.Component {
             date: today,
             status: false,
           });
-
-
         }
-
       }
     });
   };
 
   handleCancel = async (e) => {
     e.preventDefault();
-    console.log('Cancel has been click', todoStore.selectedToDoItem.id)
-    if (!todoStore.selectedToDoItem.id) {
-      console.log("Add To do")
-      this.props.onCancel();
-
-      //alternative way to set up initial field same as componentDidMount()
-      const { setFieldsValue } = this.props.form;
+    this.props.onCancel();
+    const { setFieldsValue } = this.props.form;
       setFieldsValue({
+        id:"",
         title: "",
         content: "",
         date: today,
         status: false,
-      });
-
-    } else {
-      await this.props.onCancel(todoStore.selectedToDoItem.id);
-      const { setFieldsValue } = this.props.form;
-      // setFieldsValue({
-      //   title: this.props.selectedToDoItem.title,
-      //   content: this.props.selectedToDoItem.content,
-      //   date: this.props.selectedToDoItem.date,
-      //   status: this.props.selectedToDoItem.status,
-      // });
-
-      await setFieldsValue({
-        title: todoStore.selectedToDoItem.title,
-        content: todoStore.selectedToDoItem.content,
-        date: todoStore.selectedToDoItem.date,
-        status: todoStore.selectedToDoItem.status,
-      });
-    }
+      }); 
   }
 
   async updateFormFields() {
