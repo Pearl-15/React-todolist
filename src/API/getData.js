@@ -15,13 +15,18 @@ const getDataFromDB = async(url)=>{
         let responseData = await response.json();
         return responseData;
       } catch (e) {
-        console.log(e.message);
+        console.log('API error: ', e.message);
+        throw e;
       }
 }
 
 export const getToDoList = ()=>{
     
     const url= 'http://localhost:3000/todoTable';
-        
-    return getDataFromDB(url);
+    try{
+        return getDataFromDB(url);
+    }catch(e){
+        throw e;
+    }    
 }
+

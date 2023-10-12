@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Button, Icon, Tag, Switch } from 'antd';
+import { Button, Icon, Tag, Switch, Popconfirm, message } from 'antd';
 import styled from 'styled-components';
 import moment from 'moment';
 
@@ -21,10 +21,20 @@ const StyledSwitch = styled(Switch)`
   }  
 `
 
+function confirm(e) {
+  console.log(e);
+  message.success('Click on Yes');
+}
+
+function cancel(e) {
+  console.log(e);
+  message.error('Click on No');
+}
+
 
 class ToDoItem extends React.Component {
-  
-  handleEdit = ()=>{
+
+  handleEdit = () => {
     this.props.onEdit(this.props.id);
   }
 
@@ -40,13 +50,13 @@ class ToDoItem extends React.Component {
   formatDate = (date) => {
     return (moment(date).format(dateFormat))
   }
- 
 
-  render() {  
-   
+
+  render() {
+
     return (
       <StyledToDoCard>
-        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div>
             {this.props.status ? <Tag color="#3ec166">{this.props.title}</Tag> : <Tag color="grey">{this.props.title}</Tag>}
           </div>
@@ -59,20 +69,26 @@ class ToDoItem extends React.Component {
               onChange={this.handleTaskDone}
             />
           </div>
-          
+
         </div>
 
-        
- 
+
+
         <br></br>
 
         <Tag>{this.formatDate(this.props.date)}</Tag>
 
         <p>{this.props.content}</p>
-
-        <Button onClick={this.handleDelete} type="danger" size="small" shape="circle">
+        <Popconfirm
+          title="Are you sure delete this todo?"
+          onConfirm={this.handleDelete}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button type="danger" size="small" shape="circle">
           <Icon type="delete" />
-        </Button>
+          </Button>
+        </Popconfirm>
         <Button onClick={this.handleEdit} type="primary" size="small" shape="circle">
           <Icon type="edit" />
         </Button>

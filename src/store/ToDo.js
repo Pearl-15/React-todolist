@@ -3,8 +3,6 @@ import { addToDoItem } from '../API/postData';
 import { updateToDoItem } from '../API/updateData';
 import { deleteToDoItem } from '../API/deleteData';
 import { getToDoList } from "../API/getData";
-import moment from 'moment';
-
 
 class ToDo{
     todoTable = [];
@@ -33,8 +31,9 @@ class ToDo{
             } else {
                 console.log('Unexpected response:', responseData);
             }
-        } catch (error) {
-            console.log('Error : ', error)
+        } catch (e) {
+            console.log('Error : ', e.message)
+            throw e;
         }
     });
 
@@ -55,8 +54,9 @@ class ToDo{
             }
 
 
-        } catch (error) {
-            console.log('Error: ', error);
+        } catch (e) {
+            console.log('Error: ', e.message);
+            throw e;
         }
     });
 
@@ -83,8 +83,9 @@ class ToDo{
                 console.error('Unexpected response:', responseData);
             }
 
-        } catch (error) {
-            console.log('Error : ', error);
+        } catch (e) {
+            console.log('Error : ', e.message);
+            throw e;
         }
     });
 
@@ -110,8 +111,9 @@ class ToDo{
                 console.error('Unexpected response:', responseData);
             }
 
-        } catch (error) {
-            console.log('Error : ', error);
+        } catch (e) {
+            console.log('Error : ', e.message);
+            throw e
         }
     });
     
@@ -122,8 +124,9 @@ class ToDo{
                 this.todoTable = responseData;
             }
             
-        }catch(error){
-            console.log('Error : ', error);
+        }catch(e){
+            console.log('ToDo Class Error : ', e.message);
+            throw e;
         }       
     
     });

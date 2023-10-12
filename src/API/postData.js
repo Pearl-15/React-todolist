@@ -17,13 +17,17 @@ const postDataToDB = async(url, data)=>{
         return responseData;
       } catch (e) {
         console.log(e.message);
+        throw e
       }
 }
 
 export const addToDoItem = (newToDo)=>{
 
-    const url= 'http://localhost:3000/todoTable';
-
-    return postDataToDB(url,newToDo);
+    const url= 'http://localhost:3000/todoTable';    
+    try{
+        return postDataToDB(url,newToDo);
+    }catch(e){
+        throw e;
+    }
 }
 

@@ -16,10 +16,16 @@ const deleteDataInDB = async(url, data)=>{
         return responseData;
       } catch (e) {
         console.log(e.message);
+        throw e
       }
 }
 
 export const deleteToDoItem = (id)=>{
-    const url = `http://localhost:3000/todoTable/${id}`
-    return deleteDataInDB(url);
+    // id=100;
+    const url = `http://localhost:3000/todoTable/${id}`    
+    try{
+        return deleteDataInDB(url);
+    }catch(e){
+        throw e;
+    }
 }

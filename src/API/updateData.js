@@ -10,18 +10,24 @@ const updateDataToDB = async(url, data)=>{
 
         console.log("Status code ", response.status)
         if (response.status >= 400) {
-            throw new Error(`Something went wrong. Status Code: ${response.status}`);
+            throw new Error(`${response.status}`);
         }
        
         let responseData = await response.json();
         return responseData;
       } catch (e) {
         console.log(e.message);
+        throw e;
       }
 }
 
 export const updateToDoItem = (id, todoItem)=>{
     // id=100;
-    const url = `http://localhost:3000/todoTable/${id}`
-    return updateDataToDB(url, todoItem);
+    const url = `http://localhost:3000/todoTable/${id}`;
+    try{
+        return updateDataToDB(url, todoItem);
+    }catch(e){
+        throw e;
+    }
+    
 }
