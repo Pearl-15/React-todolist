@@ -18,7 +18,7 @@ function disabledDate(current) {
 class ToDoForm extends React.Component {
 
   async componentDidMount() {
-    console.log('Component Did Mount')
+    console.log('ToDoForm : componentDidMount')
     await this.updateFormFields();
   }
 

@@ -120,7 +120,8 @@ class ToDoTable extends React.Component {
             await this.handleTaskFilter(this.state.selectedTask);
             message.success("Status has been changed successfully.")
         } catch (e) {
-            message.fail("Status change unsuccessful, please try again.")
+            message.error("Status change unsuccessful, please try again.");
+            console.log('Component Error: ', e.message);
         }
 
 
@@ -140,6 +141,7 @@ class ToDoTable extends React.Component {
     }
 
     async componentDidMount() {
+        console.log("ToDoTable : componetDidMount")
 
         try {
             await todoStore.getToDoList();
@@ -151,9 +153,7 @@ class ToDoTable extends React.Component {
         } catch (error) {
             console.log('Component Error : ', error.message);
             this.setState({ loading: false });
-            message.error('Something weng wrong, please try again!');
-            throw error;
-
+            message.error('Something weng wrong, please try again!');     
         }
     }
 
