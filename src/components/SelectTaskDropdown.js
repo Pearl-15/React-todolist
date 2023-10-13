@@ -2,7 +2,7 @@ import React from 'react';
 import { Select } from 'antd';
 const { Option } = Select;
 
-class Filter extends React.Component{
+class SelectTaskDropdown extends React.Component{
     
     handleChange = (value)=>{
         console.log("Selected : ", value);
@@ -11,7 +11,6 @@ class Filter extends React.Component{
 
     render(){
         return(
-
             <div>
             <Select defaultValue="all" style={{ width: 150 }} onChange={this.handleChange}>
                 <Option value="all">All</Option>
@@ -23,4 +22,4 @@ class Filter extends React.Component{
     }
 }
 
-export default Filter;
+export default SelectTaskDropdown;

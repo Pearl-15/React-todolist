@@ -1,11 +1,11 @@
 import React from 'react';
 import ToDoItem from './ToDoItem';
-import ToDoForm from './ToDoForm';
+import ToDoButton from './ToDoButton';
 import { Col, Row, Spin, message } from "antd";
 import moment from 'moment';
-import Filter from './Filter';
-import { StyledModal } from './ToDoForm';
-import FormComponent from './FormComponent';
+import SelectTaskDropdown from './SelectTaskDropdown';
+import { StyledModal } from './ToDoButton';
+import ToDoForm from './ToDoForm';
 import { todoStore } from '../store/ToDo';
 import { observer } from 'mobx-react';
 
@@ -20,23 +20,17 @@ const filter = (selectedTask, todoTable) => {
     } else {
         selectedStatus = ""
     }
+    // Use filter() to filter the todoTable based on selectedStatus
+    const filteredItems = todoTable.filter((todoItem) => {
+        if (selectedStatus !== "") {
+            return todoItem.status === selectedStatus;
+        }
+        return todoItem
 
-    // try {
+    });
 
-        // Use filter() to filter the todoTable based on selectedStatus
-        const filteredItems = todoTable.filter((todoItem) => {
-            if (selectedStatus !== "") {
-                return todoItem.status === selectedStatus;
-            }
-            return todoItem
+    return filteredItems;
 
-        });
-
-        return filteredItems;
-
-    // } catch (error) {
-    //     console.log('Error : ', error)
-    // }
 }
 
 class ToDoTable extends React.Component {
@@ -51,21 +45,29 @@ class ToDoTable extends React.Component {
         }
     }
 
-    addToDo = async () => {
-        this.setState({
-            isFormVisible: true
-        });
-        todoStore.setToDo();
+    showToDoForm = async (todoItemId) => {
+
+        if(!todoItemId){
+            this.setState({
+                isFormVisible: true
+            });
+            todoStore.setSelectedToDoItem();
+        }else{
+               //to render based on state change 
+               const targetItem = this.state.filteredToDoTable.find((item) => item.id === todoItemId);
+               const dateMoment = moment(targetItem.date); //convert date(string) to
+       
+               this.setState({
+                   isFormVisible: true,
+               });   
+               targetItem.date = dateMoment;
+               todoStore.setSelectedToDoItem(targetItem)
+               console.log("OnEdit : ", todoItemId);
+        }         
     }
 
-
-    handleAddToDoOk = async (values) => {
-        todoStore.addToDo(values);
-    }
-
-
-    onDelete = async (todoItemId) => {
-        try{
+    handleDelete = async (todoItemId) => {
+        try {
             await todoStore.deleteToDo(todoItemId);
             this.setState({
                 filteredToDoTable: this.state.filteredToDoTable.filter((todoItem) => {
@@ -73,56 +75,37 @@ class ToDoTable extends React.Component {
                 })
             });
             message.warning('ToDo has been delected successfully.')
-        }catch(e){
+        } catch (e) {
             message.error('Delete unsuccessful, something is wrong, please try again!');
-            console.log('Component Error: ', e.message); 
+            console.log('Component Error: ', e.message);
         }
-    
-    }
-
-    onEdit = async (todoItemId) => {
-        //to render based on state change 
-        const targetItem = this.state.filteredToDoTable.find((item) => item.id === todoItemId);
-        const dateMoment = moment(targetItem.date); //convert date(string) to
-
-        this.setState({
-            isFormVisible: true,
-        });
-
-
-        targetItem.date = dateMoment;
-        todoStore.setToDo(targetItem);
-
-        console.log("OnEdit : ", todoItemId);
 
     }
-
-
     handleOk = async (values) => {
         if (!values.id) {
             //if AddToDoOK
-            try{
+            try {
                 await todoStore.addToDo(values);
-                await this.onFilter(this.state.selectedTask);
+                await this.handleTaskFilter(this.state.selectedTask);
                 this.handleCancel(values);
-                await message.success('New ToDo has been added successfully',2); 
-            }catch(e){
+                await message.success('New ToDo has been added successfully', 2);
+            } catch (e) {
                 message.error('Add ToDo unsuccessful, something is wrong, please try again!');
-                console.log('Component Error: ', e.message); 
+                console.log('Component Error: ', e);
             }
-           
-           
+
+
         } else {
             //if EditToDoOK
             try {
                 await todoStore.updateToDo(values);
-                await this.onFilter(this.state.selectedTask);
+                await this.handleTaskFilter(this.state.selectedTask);
                 this.handleCancel(values);
-                message.success('ToDo has been edited successfully',2);                              
-            }catch(e){
+                message.success('ToDo has been edited successfully', 2);
+            } catch (e) {
                 message.error('Edit unsuccessful, something is wrong, please try again!');
-                console.log('Component Error: ', e.message);       
-            }            
+                console.log('Component Error: ', e.message);
+            }
         }
     }
 
@@ -130,32 +113,29 @@ class ToDoTable extends React.Component {
         this.setState({ isFormVisible: false });
     };
 
-    onChangeStatus = async (updatedStatus, todoItemId) => {
+    handleChangeStatus = async (updatedStatus, todoItemId) => {
 
-        try{
+        try {
             await todoStore.updateStatus(updatedStatus, todoItemId);
-            await this.onFilter(this.state.selectedTask);
+            await this.handleTaskFilter(this.state.selectedTask);
             message.success("Status has been changed successfully.")
-        }catch(e){
+        } catch (e) {
             message.fail("Status change unsuccessful, please try again.")
         }
-    
+
 
     }
 
-    onFilter = async (value) => {
-        console.log(" From To Do Table Filter ", value);
+    handleTaskFilter = async (selectedTask) => {
 
         //to fix the asynchronous of setState issue use callback function
         this.setState({
-            selectedTask: value,
+            selectedTask: selectedTask,
         }, () => {
             const filteredItems = filter(this.state.selectedTask, todoStore.todoTable);
             this.setState({
                 filteredToDoTable: filteredItems
             });
-
-            console.log("this.selectedTask ", this.state.selectedTask)
         });
     }
 
@@ -171,7 +151,7 @@ class ToDoTable extends React.Component {
         } catch (error) {
             console.log('Component Error : ', error.message);
             this.setState({ loading: false });
-            message.error('Something weng wrong, please try again!');          
+            message.error('Something weng wrong, please try again!');
             throw error;
 
         }
@@ -180,31 +160,21 @@ class ToDoTable extends React.Component {
     render() {
         return (
             <div>
-                {/* {this.state.error404 && 
-                <>
-                  <Result
-                    status="403"
-                    title="403"
-                    subTitle="Sorry, the page you visited does not exist."
-                    extra={<Button type="primary">Back Home</Button>}
-                />
-                </>} */}
-
                 <Row>
                     <Col span={8}>
-                        <ToDoForm onAdd={this.addToDo} />
+                        <ToDoButton onAdd={this.showToDoForm} />
                     </Col>
                     <Col span={8} offset={8}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                             <span style={{ marginRight: '8px', color: 'white', backgroundColor: '#f5ba13', padding: '4.5px 12px', borderRadius: '0.2rem', fontWeight: 'bold' }}>Select Task</span>
-                            <Filter onFilter={this.onFilter} />
+                            <SelectTaskDropdown onFilter={this.handleTaskFilter} />
                         </div>
                     </Col>
                 </Row>
 
                 {this.state.loading ?
                     <>
-                        <div style={{ textAlign: "center", margin: "50%" }}>
+                        <div style={{ textAlign: "center", margin: "30%" }}>
                             <Spin tip="Loading..."></Spin>
                         </div>
                     </> :
@@ -223,9 +193,9 @@ class ToDoTable extends React.Component {
                                             content={todoItem.content}
                                             date={dateMoment}
                                             status={todoItem.status}
-                                            onDelete={this.onDelete}
-                                            onEdit={this.onEdit}
-                                            onChangeStatus={this.onChangeStatus}
+                                            onDelete={this.handleDelete}
+                                            onEdit={this.showToDoForm}
+                                            onChangeStatus={this.handleChangeStatus}
                                         />
                                     </Col>
                                 )
@@ -239,7 +209,7 @@ class ToDoTable extends React.Component {
                             closable={false}
                         >
 
-                            <FormComponent
+                            <ToDoForm
                                 onOk={this.handleOk}
                                 onCancel={this.handleCancel}
                             />
