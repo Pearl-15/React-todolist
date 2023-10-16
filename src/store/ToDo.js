@@ -16,81 +16,40 @@ class ToDo {
         this.selectedToDoItem = targetItem;
     };
 
-
-    addToDo = flow(function* (newToDo) {
+    addToDoItem = flow(function* (newToDo) {
         newToDo.status = false;
         const responseData = yield addToDoItem(newToDo);
-
-        if (responseData && responseData.title && responseData.content) {
-            console.log('ToDo added successfully:', responseData);
-            this.todoTable.push(responseData);
-
-        } else {
-            console.log('Unexpected response:', responseData);
-        }
+        console.log('ToDo added successfully:', responseData);
+        this.todoTable.push(responseData);
     });
 
-    deleteToDo = flow(function* (todoItemId) {
-
+    deleteToDoItem = flow(function* (todoItemId) {
         const responseData = yield deleteToDoItem(todoItemId);
-        if (responseData) {
-            console.log('ToDo deleted successfully');
-
-            this.todoTable = this.todoTable.filter((todoItem) => {
-                return todoItem.id !== todoItemId;
-            });
-
-        } else {
-            console.error('Unexpected response:', responseData);
-        }
+        console.log('ToDo deleted successfully');
+        this.todoTable = this.todoTable.filter((todoItem) => {
+            return todoItem.id !== todoItemId;
+        });
     });
 
-    updateToDo = flow(function* (values) {
-
-        const obj = { title: values.title, content: values.content, date: values.date, status: values.status };
-
-        const responseData = yield updateToDoItem(values.id, obj);
-
-        if (responseData) {
-            console.log('Edited Successfully in DB: ', responseData);
-            const updatedTodoTable = this.todoTable.map((todoItem) => {
-                if (todoItem.id === values.id) {
-                    return { ...todoItem, title: responseData.title, content: responseData.content, date: responseData.date };
-                }
-                return todoItem;
-            });
-
-            this.todoTable = updatedTodoTable;
-
-        } else {
-            console.error('Unexpected response:', responseData);
+    updateToDoItem = flow(function* (id, updatedTodoItem) {
+        const todoItem = this.todoTable.find((item) => item.id === id);
+        let responseData;
+        if(typeof updatedTodoItem ==='boolean'){
+            const updatedStatus = { status: updatedTodoItem };
+            responseData = yield updateToDoItem(id, updatedStatus);
+        }else{
+            responseData = yield updateToDoItem(id, updatedTodoItem);   
         }
-
-    });
-
-    updateStatus = flow(function* (updatedStatus, todoItemId) {
-        console.log(" Status change from To Do Table ", updatedStatus, todoItemId)
-        const obj = { status: updatedStatus };
-        const responseData = yield updateToDoItem(todoItemId, obj);
-
-        if (responseData) {
-            console.log('Edited Successfully in DB: ', responseData);
-            const updatedTodoTable = this.todoTable.map((todoItem) => {
-                if (todoItem.id === todoItemId) {
-                    return { ...todoItem, status: responseData.status };
-                }
-                return todoItem;
-            });
-
-            this.todoTable = updatedTodoTable;
-
-        } else {
-            console.error('Unexpected response:', responseData);
-        }
+        console.log('Edited Successfully in DB: ', responseData);
+        if (todoItem) {
+            todoItem.title = responseData.title;
+            todoItem.content = responseData.content;
+            todoItem.date = responseData.date;
+            todoItem.status = responseData.status;
+            }
     });
 
     getToDoList = flow(function* () {
-
         const responseData = yield getToDoList();
         if (responseData) {
             this.todoTable = responseData;
@@ -102,13 +61,11 @@ class ToDo {
 decorate(ToDo, {
     todoTable: observable,
     selectedToDoItem: observable,
-    setToDo: action,
-    addToDo: action,
-    deleteToDo: action,
-    updateToDo: action,
-    updateStatus: action,
+    setSelectedToDoItem: action,
+    addToDoItem: action,
+    deleteToDoItem: action,
+    updateToDoItem: action,
     getToDoList: action,
-
 });
 
 export const todoStore = new ToDo();

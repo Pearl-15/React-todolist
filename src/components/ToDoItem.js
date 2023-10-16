@@ -21,17 +21,6 @@ const StyledSwitch = styled(Switch)`
   }  
 `
 
-function confirm(e) {
-  console.log(e);
-  message.success('Click on Yes');
-}
-
-function cancel(e) {
-  console.log(e);
-  message.error('Click on No');
-}
-
-
 class ToDoItem extends React.Component {
 
   handleEdit = () => {
@@ -71,9 +60,7 @@ class ToDoItem extends React.Component {
           </div>
 
         </div>
-
-
-
+        
         <br></br>
 
         <Tag>{this.formatDate(this.props.date)}</Tag>

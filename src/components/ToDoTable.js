@@ -68,7 +68,7 @@ class ToDoTable extends React.Component {
 
     handleDelete = async (todoItemId) => {
         try {
-            await todoStore.deleteToDo(todoItemId);
+            await todoStore.deleteToDoItem(todoItemId);
             this.setState({
                 filteredToDoTable: this.state.filteredToDoTable.filter((todoItem) => {
                     return todoItem.id !== todoItemId;
@@ -85,7 +85,7 @@ class ToDoTable extends React.Component {
         if (!values.id) {
             //if AddToDoOK
             try {
-                await todoStore.addToDo(values);
+                await todoStore.addToDoItem(values);
                 await this.handleTaskFilter(this.state.selectedTask);
                 this.handleCancel(values);
                 await message.success('New ToDo has been added successfully', 2);
@@ -98,7 +98,7 @@ class ToDoTable extends React.Component {
         } else {
             //if EditToDoOK
             try {
-                await todoStore.updateToDo(values);
+                await todoStore.updateToDoItem(values.id,values);
                 await this.handleTaskFilter(this.state.selectedTask);
                 this.handleCancel(values);
                 message.success('ToDo has been edited successfully', 2);
@@ -116,15 +116,13 @@ class ToDoTable extends React.Component {
     handleChangeStatus = async (updatedStatus, todoItemId) => {
 
         try {
-            await todoStore.updateStatus(updatedStatus, todoItemId);
+            await todoStore.updateToDoItem(todoItemId, updatedStatus);
             await this.handleTaskFilter(this.state.selectedTask);
             message.success("Status has been changed successfully.")
         } catch (e) {
             message.error("Status change unsuccessful, please try again.");
             console.log('Component Error: ', e.message);
         }
-
-
     }
 
     handleTaskFilter = async (selectedTask) => {
