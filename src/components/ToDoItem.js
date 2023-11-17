@@ -3,6 +3,7 @@ import React from 'react';
 import { Button, Icon, Tag, Switch, Popconfirm, message } from 'antd';
 import styled from 'styled-components';
 import moment from 'moment';
+import { observer } from 'mobx-react';
 
 const dateFormat = 'DD/MM/YY';
 
@@ -24,20 +25,20 @@ const StyledSwitch = styled(Switch)`
 class ToDoItem extends React.Component {
 
   handleEdit = () => {
-    this.props.onEdit(this.props.id);
+    this.props.onEdit(this.props.todoId);
   }
 
   handleDelete = () => {
-    this.props.onDelete(this.props.id);
+    this.props.onDelete(this.props.todoId);
   };
 
   handleTaskDone = (e) => {
     console.log('target : ', e)
-    this.props.onChangeStatus(e, this.props.id)
+    this.props.onChangeStatus(e, this.props.todoId)
   }
 
-  formatDate = (date) => {
-    return (moment(date).format(dateFormat))
+  formatDate = (createdDate) => {
+    return (moment(createdDate).format(dateFormat))
   }
 
 
@@ -47,12 +48,12 @@ class ToDoItem extends React.Component {
       <StyledToDoCard>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div>
-            {this.props.status ? <Tag color="#3ec166">{this.props.title}</Tag> : <Tag color="grey">{this.props.title}</Tag>}
+            {this.props.todoStatus ? <Tag color="#3ec166">{this.props.title}</Tag> : <Tag color="grey">{this.props.title}</Tag>}
           </div>
 
           <div>
             <StyledSwitch
-              checked={this.props.status}
+              checked={this.props.todoStatus}
               checkedChildren={<Icon type="check" />}
               unCheckedChildren={<Icon type="close" />}
               onChange={this.handleTaskDone}
@@ -63,7 +64,7 @@ class ToDoItem extends React.Component {
         
         <br></br>
 
-        <Tag>{this.formatDate(this.props.date)}</Tag>
+        <Tag>{this.formatDate(this.props.createdDate)}</Tag>
 
         <p>{this.props.content}</p>
         <Popconfirm
@@ -84,5 +85,5 @@ class ToDoItem extends React.Component {
   }
 }
 
-export default ToDoItem;
+export default observer(ToDoItem);
 

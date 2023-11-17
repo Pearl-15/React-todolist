@@ -24,7 +24,7 @@ class ToDoForm extends React.Component {
 
   async componentDidUpdate(prevProps, prevState) {
 
-    if (this.props.form.getFieldValue('id') !== todoStore.selectedToDoItem.id) {
+    if (this.props.form.getFieldValue('todoId') !== todoStore.selectedToDoItem.todoId) {
       await this.updateFormFields();
     }
   }
@@ -41,15 +41,15 @@ class ToDoForm extends React.Component {
         console.log('Received values of form From FormComponent: ', values);
         this.props.onOk(values);
 
-        if (!this.props.form.getFieldValue('id')) {
+        if (!this.props.form.getFieldValue('todoId')) {
 
           //can't use resetFields() as hidden field status & date will be setback to empty, so that need to manually set 
           const { setFieldsValue } = this.props.form;
           setFieldsValue({
             title: "",
             content: "",
-            date: today,
-            status: false,
+            createdDate: today,
+            todoStatus: false,
           });
         }
       }
@@ -61,22 +61,22 @@ class ToDoForm extends React.Component {
     this.props.onCancel();
     const { setFieldsValue } = this.props.form;
       setFieldsValue({
-        id:"",
+        todoId:"",
         title: "",
         content: "",
-        date: today,
-        status: false,
+        createdDate: today,
+        todoStatus: false,
       }); 
   }
 
   async updateFormFields() {
     const { setFieldsValue } = this.props.form;
     await setFieldsValue({
-      id: todoStore.selectedToDoItem.id,
+      todoId: todoStore.selectedToDoItem.todoId,
       title: todoStore.selectedToDoItem.title ,
       content: todoStore.selectedToDoItem.content ,
-      date: todoStore.selectedToDoItem.date ,
-      status: todoStore.selectedToDoItem.status ,
+      createdDate: todoStore.selectedToDoItem.createdDate ,
+      todoStatus: todoStore.selectedToDoItem.todoStatus ,
     });
   }
 
@@ -90,7 +90,7 @@ class ToDoForm extends React.Component {
     return (
       <Form onSubmit={this.handleSubmit}>
         <Form.Item label='Date'>
-          {getFieldDecorator('date', {
+          {getFieldDecorator('createdDate', {
             rules: [{ required: true, message: 'Please select date!' }],
           })(<DatePicker format={dateFormat} disabledDate={disabledDate} />)}
         </Form.Item>
@@ -111,10 +111,10 @@ class ToDoForm extends React.Component {
             />)}
         </Form.Item>
         <Form.Item style={{ display: 'none' }}>
-          {getFieldDecorator('status')(<Input type="hidden" />)}
+          {getFieldDecorator('todoStatus')(<Input type="hidden" />)}
         </Form.Item>
         <Form.Item style={{ display: 'none' }}>
-          {getFieldDecorator('id')(<Input type="hidden" />)}
+          {getFieldDecorator('todoId')(<Input type="hidden" />)}
         </Form.Item>
         <Form.Item>
           <Button type="default" onClick={this.handleCancel}>

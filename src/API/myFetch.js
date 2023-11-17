@@ -18,3 +18,5 @@ const myFetch = async(method, url, data=null)=>{
 }
 
 export default myFetch;
+
+export const Resource_Url = "https://1khi961aq3.execute-api.us-east-1.amazonaws.com/dev/todoTable";

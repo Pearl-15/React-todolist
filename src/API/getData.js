@@ -1,7 +1,7 @@
-import myFetch from "./myFetch";
+import myFetch, { Resource_Url } from "./myFetch";
 
 export const getToDoList = ()=>{    
-    const url= 'http://localhost:3000/todoTable';
+    const url = Resource_Url;
     // const options = {
     //     method: "GET",
     //     headers:{ 'Content-Type' :'application/json'},

@@ -1,7 +1,7 @@
-import myFetch from "./myFetch";
+import myFetch, { Resource_Url } from "./myFetch";
 
 export const addToDoItem = (newToDo)=>{
-    const url= 'http://localhost:3000/todoTable';    
+    const url= Resource_Url;    
     return myFetch("POST",url,newToDo);
  
 }

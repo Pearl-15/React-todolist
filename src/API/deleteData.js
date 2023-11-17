@@ -1,6 +1,6 @@
-import myFetch from "./myFetch";
+import myFetch, { Resource_Url } from "./myFetch";
 export const deleteToDoItem = (id)=>{
     // id=100;
-    const url = `http://localhost:3000/todoTable/${id}`    
+    const url = `${Resource_Url}/${id}`    
     return myFetch("DELETE",url);
 }

@@ -1,4 +1,4 @@
-import { observable, decorate, action, computed, flow } from "mobx";
+import { observable, decorate, action, computed, flow, toJS } from "mobx";
 import { addToDoItem } from '../API/postData';
 import { updateToDoItem } from '../API/updateData';
 import { deleteToDoItem } from '../API/deleteData';
@@ -17,42 +17,48 @@ class ToDo {
     };
 
     addToDoItem = flow(function* (newToDo) {
-        newToDo.status = false;
+        newToDo.todoStatus = false;
         const responseData = yield addToDoItem(newToDo);
         console.log('ToDo added successfully:', responseData);
-        this.todoTable.push(responseData);
+        yield this.todoTable.push(toJS(responseData.Item));
+        console.log("this.todoTable", toJS(this.todoTable));
     });
 
-    deleteToDoItem = flow(function* (todoItemId) {
-        const responseData = yield deleteToDoItem(todoItemId);
+    deleteToDoItem = flow(function* (todoItemtodoId) {
+        const responseData = yield deleteToDoItem(todoItemtodoId);
         console.log('ToDo deleted successfully');
         this.todoTable = this.todoTable.filter((todoItem) => {
-            return todoItem.id !== todoItemId;
+            return todoItem.todoId !== todoItemtodoId;
         });
     });
 
-    updateToDoItem = flow(function* (id, updatedTodoItem) {
-        const todoItem = this.todoTable.find((item) => item.id === id);
+    updateToDoItem = flow(function* (todoId, updatedTodoItem) {
+        const todoItem = this.todoTable.find((item) => item.todoId === todoId);
         let responseData;
         if(typeof updatedTodoItem ==='boolean'){
-            const updatedStatus = { status: updatedTodoItem };
-            responseData = yield updateToDoItem(id, updatedStatus);
+            const updatedStatus = { todoStatus: updatedTodoItem };
+            responseData = yield updateToDoItem(todoId, updatedStatus);
+            responseData = toJS(responseData.UpdatedItem)
+            if (todoItem) {
+                todoItem.todoStatus = responseData.todoStatus;
+                }
         }else{
-            responseData = yield updateToDoItem(id, updatedTodoItem);   
-        }
-        console.log('Edited Successfully in DB: ', responseData);
-        if (todoItem) {
-            todoItem.title = responseData.title;
-            todoItem.content = responseData.content;
-            todoItem.date = responseData.date;
-            todoItem.status = responseData.status;
-            }
+            responseData = yield updateToDoItem(todoId, updatedTodoItem);  
+            console.log('Edited Successfully in DB: ', responseData);
+            responseData = toJS(responseData.UpdatedItem)
+            if (todoItem) {
+                todoItem.title = responseData.title;
+                todoItem.content = responseData.content;
+                todoItem.createdDate = responseData.createdDate;
+                todoItem.todoStatus = responseData.todoStatus;
+                } 
+        }      
     });
 
     getToDoList = flow(function* () {
         const responseData = yield getToDoList();
         if (responseData) {
-            this.todoTable = responseData;
+            this.todoTable = responseData.todoTable;
         }
     });
 

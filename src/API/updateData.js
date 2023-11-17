@@ -1,7 +1,7 @@
-import myFetch from "./myFetch";
+import myFetch, { Resource_Url } from "./myFetch";
 
 export const updateToDoItem = (id, todoItem)=>{
     // id=100;
-    const url = `http://localhost:3000/todoTable/${id}`;
+    const url = `${Resource_Url}/${id}`;
     return myFetch("PATCH",url, todoItem);    
 }

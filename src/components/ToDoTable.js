@@ -8,6 +8,7 @@ import { StyledModal } from './ToDoButton';
 import ToDoForm from './ToDoForm';
 import { todoStore } from '../store/ToDo';
 import { observer } from 'mobx-react';
+import { toJS } from 'mobx';
 
 
 
@@ -23,7 +24,7 @@ const filter = (selectedTask, todoTable) => {
     // Use filter() to filter the todoTable based on selectedStatus
     const filteredItems = todoTable.filter((todoItem) => {
         if (selectedStatus !== "") {
-            return todoItem.status === selectedStatus;
+            return todoItem.todoStatus === selectedStatus;
         }
         return todoItem
 
@@ -45,33 +46,33 @@ class ToDoTable extends React.Component {
         }
     }
 
-    showToDoForm = async (todoItemId) => {
+    showToDoForm = async (todoId) => {
 
-        if(!todoItemId){
+        if(!todoId){
             this.setState({
                 isFormVisible: true
             });
             todoStore.setSelectedToDoItem();
         }else{
                //to render based on state change 
-               const targetItem = this.state.filteredToDoTable.find((item) => item.id === todoItemId);
-               const dateMoment = moment(targetItem.date); //convert date(string) to
+               const targetItem = this.state.filteredToDoTable.find((item) => item.todoId === todoId);
+               const dateMoment = moment(targetItem.createdDate); //convert date(string) to
        
                this.setState({
                    isFormVisible: true,
                });   
-               targetItem.date = dateMoment;
+               targetItem.createdDate = dateMoment;
                todoStore.setSelectedToDoItem(targetItem)
-               console.log("OnEdit : ", todoItemId);
+               console.log("OnEdit : ", todoId);
         }         
     }
 
-    handleDelete = async (todoItemId) => {
+    handleDelete = async (todoId) => {
         try {
-            await todoStore.deleteToDoItem(todoItemId);
+            await todoStore.deleteToDoItem(todoId);
             this.setState({
                 filteredToDoTable: this.state.filteredToDoTable.filter((todoItem) => {
-                    return todoItem.id !== todoItemId;
+                    return todoItem.todoId !== todoId;
                 })
             });
             message.warning('ToDo has been delected successfully.')
@@ -82,7 +83,7 @@ class ToDoTable extends React.Component {
 
     }
     handleOk = async (values) => {
-        if (!values.id) {
+        if (!values.todoId) {
             //if AddToDoOK
             try {
                 await todoStore.addToDoItem(values);
@@ -98,7 +99,7 @@ class ToDoTable extends React.Component {
         } else {
             //if EditToDoOK
             try {
-                await todoStore.updateToDoItem(values.id,values);
+                await todoStore.updateToDoItem(values.todoId,values);
                 await this.handleTaskFilter(this.state.selectedTask);
                 this.handleCancel(values);
                 message.success('ToDo has been edited successfully', 2);
@@ -113,10 +114,10 @@ class ToDoTable extends React.Component {
         this.setState({ isFormVisible: false });
     };
 
-    handleChangeStatus = async (updatedStatus, todoItemId) => {
+    handleChangeStatus = async (updatedStatus, todoId) => {
 
         try {
-            await todoStore.updateToDoItem(todoItemId, updatedStatus);
+            await todoStore.updateToDoItem(todoId, updatedStatus);
             await this.handleTaskFilter(this.state.selectedTask);
             message.success("Status has been changed successfully.")
         } catch (e) {
@@ -131,7 +132,7 @@ class ToDoTable extends React.Component {
         this.setState({
             selectedTask: selectedTask,
         }, () => {
-            const filteredItems = filter(this.state.selectedTask, todoStore.todoTable);
+            const filteredItems = filter(this.state.selectedTask, toJS(todoStore.todoTable));
             this.setState({
                 filteredToDoTable: filteredItems
             });
@@ -142,9 +143,9 @@ class ToDoTable extends React.Component {
         console.log("ToDoTable : componetDidMount")
 
         try {
-            await todoStore.getToDoList();
+            await todoStore.getToDoList();  
             this.setState({
-                filteredToDoTable: todoStore.todoTable,
+                filteredToDoTable: toJS(todoStore.todoTable),
                 selectedTask: "all",
                 loading: false,
             });
@@ -156,6 +157,7 @@ class ToDoTable extends React.Component {
     }
 
     render() {
+        console.log("this.state.filteredToDoTable", this.state.filteredToDoTable);
         return (
             <div>
                 <Row>
@@ -181,16 +183,16 @@ class ToDoTable extends React.Component {
 
                             {this.state.filteredToDoTable.map((todoItem) => {
 
-                                const dateMoment = moment(todoItem.date);
+                                const dateMoment = moment(todoItem.createdDate);
                                 return (
 
-                                    <Col span={6} key={todoItem.id}>
+                                    <Col span={6} key={todoItem.todoId}>
                                         <ToDoItem
-                                            id={todoItem.id}
+                                            todoId={todoItem.todoId}
                                             title={todoItem.title}
                                             content={todoItem.content}
-                                            date={dateMoment}
-                                            status={todoItem.status}
+                                            createdDate={dateMoment}
+                                            todoStatus={todoItem.todoStatus}
                                             onDelete={this.handleDelete}
                                             onEdit={this.showToDoForm}
                                             onChangeStatus={this.handleChangeStatus}
